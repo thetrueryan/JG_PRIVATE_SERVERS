@@ -3,8 +3,8 @@ from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
 from aiogram.fsm.storage.memory import MemoryStorage
 
-from config import BOT_TOKEN
-from handlers import start, main_menu_handlers, buy_vpn_handlers, go_back
+from config.settings import BOT_TOKEN
+from bot.handlers.user_handlers import start, main_menu_handlers, buy_vpn_handlers, go_back
 
 dp = Dispatcher()
 dp = Dispatcher(storage=MemoryStorage()) 

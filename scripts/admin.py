@@ -1,4 +1,4 @@
-from bot_init import bot
+from bot.bot import bot
 
 
 async def send_order_info_to_admin(order_info: str, user_info: str):

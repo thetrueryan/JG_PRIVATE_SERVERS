@@ -1,9 +1,9 @@
 import asyncio
 from aiocryptopay.models.invoice import Invoice
 
-from db.core import AsyncCore
+from db.repositories.core import AsyncCore
 from payment.crypto_init import crypto
-from logs.logger import logger
+from config.logger import logger
 
 async def check_invoice_status_loop(invoice: Invoice) -> bool:
     invoice_id = invoice.invoice_id

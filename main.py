@@ -1,8 +1,8 @@
 import asyncio
 import logging
 
-from dp_init import dp
-from bot_init import bot
+from bot.dispatcher import dp
+from bot.bot import bot
 
 
 async def main():

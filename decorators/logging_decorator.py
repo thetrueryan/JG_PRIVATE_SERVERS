@@ -1,7 +1,7 @@
 from functools import wraps
 import logging
 
-from logs.logger import logger
+from config.logger import logger
 
 
 def log_call(func):

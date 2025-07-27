@@ -2,10 +2,10 @@ from aiogram.types import Message, FSInputFile
 from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 
-from states import VPNOrder
+from bot.states import VPNOrder
 
-from handlers.start import cmd_start
-from handlers.buy_vpn_handlers import (
+from bot.handlers.user_handlers.start import cmd_start
+from bot.handlers.user_handlers.buy_vpn_handlers import (
     cmd_select_vpn_country,
     cmd_select_vpn_type,
     cmd_select_traffic,

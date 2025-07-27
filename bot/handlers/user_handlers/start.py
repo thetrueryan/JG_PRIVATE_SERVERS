@@ -4,18 +4,18 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 
 from sqlalchemy.exc import IntegrityError
-from logs.logger import logger
+from config.logger import logger
 
-from keyboards.main_menu_keyboard import main_menu
-from states import VPNOrder
-from db.core import AsyncCore
+from bot.keyboards.user_keyboard.main_menu_keyboard import main_menu
+from bot.states import VPNOrder
+from db.repositories.core import AsyncCore
 
 router = Router()
 
 @router.message(Command("start"))
 async def cmd_start(message: Message, state: FSMContext):
     await state.update_data(price=0)
-    banner = FSInputFile("./images/main_banner.png")
+    banner = FSInputFile("./bot/images/main_banner.png")
     if message.from_user:
         try:
             telegram_id = message.from_user.id
