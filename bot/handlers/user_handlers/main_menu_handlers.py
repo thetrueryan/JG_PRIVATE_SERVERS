@@ -9,12 +9,3 @@ async def cmd_feedback(message: Message):
     banner = FSInputFile("./bot/images/feedback_banner.png")
     await message.answer_photo(banner, caption="💬 Задавайте вопросы сюда: @ttryan")
 
-@router.message(F.text == "🧾 Как пользоваться?")
-async def cmd_guide_for_use(message: Message):
-    banner = FSInputFile("./bot/images/guide_banner.png")
-    await message.answer_photo(banner, caption="☑️ Гайд по использованию: 'link'")
-
-@router.message(F.text == "❓ Помощь")
-async def cmd_help(message: Message):
-    banner = FSInputFile("./bot/images/help_banner.png")
-    await message.answer_photo(banner, caption="☑️ ответы на вопросы: ")

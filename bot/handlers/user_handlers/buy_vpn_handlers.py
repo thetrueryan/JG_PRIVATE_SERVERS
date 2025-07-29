@@ -17,12 +17,13 @@ from bot.keyboards.user_keyboard.keyboard_captions import captions
 from payment.calculate import calculate_price, calculate_duration
 from payment.check_invoice_status import check_invoice_status_loop
 from payment.crypto_init import crypto
+from payment.crypto_invoice import get_crypto_invoice
 from db.repositories.core import AsyncCore
 from scripts.admin import send_order_info_to_admin
 
 router = Router()
 
-@router.message(F.text == "🛒 Купить VPN")
+@router.message(F.text == "🛒 Купить сервер")
 async def cmd_select_vpn_country(message: Message, state: FSMContext):
     banner=FSInputFile("./bot/images/country_banner.png")
     await state.update_data(prev="main_menu")
@@ -33,16 +34,15 @@ async def cmd_select_vpn_country(message: Message, state: FSMContext):
 async def cmd_select_vpn_type(message: Message, state: FSMContext):
     await state.update_data(country=message.text)
     banner=FSInputFile("./bot/images/vpn_type_banner.png")
-    await state.update_data(prev=await state.get_state())
+    await state.update_data(prev=VPNOrder.country)
     await message.answer_photo(banner, caption=captions["vpn_type"], reply_markup=select_vpn_type_menu())
     await state.set_state(VPNOrder.vpn_type)
-    await state.update_data(vpn_type=message.text)
 
 @router.message(VPNOrder.vpn_type, F.text != "↩️ Назад")
 async def cmd_select_traffic(message: Message, state: FSMContext):
     await state.update_data(vpn_type=message.text)
     banner = FSInputFile("./bot/images/traffic_banner.png")
-    await state.update_data(prev=await state.get_state())
+    await state.update_data(prev=VPNOrder.vpn_type)
     await message.answer_photo(banner, caption=captions["vpn_traffic"], reply_markup=select_traffic_menu())
     await state.set_state(VPNOrder.traffic)
 
@@ -50,7 +50,7 @@ async def cmd_select_traffic(message: Message, state: FSMContext):
 async def cmd_select_period(message: Message, state: FSMContext):
     await state.update_data(traffic=message.text)
     banner = FSInputFile("./bot/images/period_banner.png")
-    await state.update_data(prev=await state.get_state())
+    await state.update_data(prev=VPNOrder.traffic)
     await message.answer_photo(banner, caption=captions["vpn_select_period"], reply_markup=select_period_menu())
     await state.set_state(VPNOrder.period)
 
@@ -58,14 +58,14 @@ async def cmd_select_period(message: Message, state: FSMContext):
 async def cmd_select_payment(message: Message, state: FSMContext):
         await state.update_data(period=message.text)
         banner = FSInputFile("./bot/images/payment_banner.png")
-        await state.update_data(prev="main_menu")
+        await state.update_data(prev=VPNOrder.period)
         await message.answer_photo(banner, caption=captions["vpn_select_payment"], reply_markup=select_payment_menu())
         await state.set_state(VPNOrder.payment)
 
 @router.message(VPNOrder.payment, F.text == "💎 Cryptobot")
-async def cmd_crypto_payment_link(message: Message, state: FSMContext):
+async def cmd_crypto_payment(message: Message, state: FSMContext):
     await state.update_data(payment=message.text)
-    await state.update_data(prev=await state.get_state())
+    await state.update_data(prev=VPNOrder.payment)
     data = await state.get_data()
     payment_type = data.get("payment")
     duration = await calculate_duration(data)
@@ -74,12 +74,7 @@ async def cmd_crypto_payment_link(message: Message, state: FSMContext):
     if payment_type == "💎 Cryptobot":
         if isinstance(total_price, float) and isinstance(duration, int):
             if message.from_user:
-                invoice = await crypto.create_invoice(
-                    currency_type="fiat", 
-                    fiat="RUB", 
-                    amount=total_price, 
-                    expires_in=900,
-                )
+                invoice = await get_crypto_invoice(total_price)
                 invoice_id = invoice.invoice_id
                 telegram_id = message.from_user.id
                 if telegram_id:

@@ -1,6 +1,4 @@
 from functools import wraps
-import logging
-
 from config.logger import logger
 
 

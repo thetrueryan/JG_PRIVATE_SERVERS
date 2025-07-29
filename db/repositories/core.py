@@ -1,7 +1,6 @@
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from sqlalchemy.orm import selectinload, joinedload, contains_eager
+from sqlalchemy.orm import selectinload
 
 from typing import Optional
 from datetime import datetime, timedelta
@@ -26,14 +25,14 @@ class AsyncCore:
     async def add_user(
         telegram_id: int, 
         first_name: Optional[str]=None, 
-        last_name: Optional[str]=None
+        last_name: Optional[str]=None,
         ):
         async with async_session_factory() as session:
             try:
                 new_user = UsersOrm(
                     telegram_id=telegram_id, 
                     first_name=first_name, 
-                    last_name=last_name
+                    last_name=last_name,
                     )
                 session.add(new_user)
                 await session.commit()
@@ -66,14 +65,14 @@ class AsyncCore:
         user_id: int, 
         invoice_id: int,
         price: float,
-        duration_days: int,
+        duration_months: int,
         ):
         async with async_session_factory() as session:
             new_order = OrdersOrm(
                 user_id=user_id,
                 invoice_id=invoice_id,
                 price=price,
-                duration_days=duration_days,
+                duration_months=duration_months,
                 status="active",
             )
             session.add(new_order)
@@ -96,9 +95,11 @@ class AsyncCore:
                 if status_name:
                     order.status = status_name
                 if paid_at:
-                    order.paid_at = datetime.utcnow()
-                if expired_at:
-                    order.expires_at = order.paid_at + timedelta(days=order.duration_days)
+                    duration_days = order.duration_months * 30
+                    paid_time = datetime.utcnow()
+                    order.paid_at = paid_time
+                    if expired_at:
+                        order.expires_at = paid_time + timedelta(days=duration_days)
                 await session.commit()
             else:
                 logger.warning(f"Ордер по invoice_id {invoice_id} не удалось найти и обновить.")
@@ -112,8 +113,31 @@ class AsyncCore:
                 .filter(UsersOrm.telegram_id == telegram_id)
             )
             res = await session.execute(query)
-            result = res.scalar_one_or_none()
-            if result:
-                return int(result)
-    
-    
+            user_id = res.scalar_one_or_none()
+            if user_id:
+                return int(user_id)
+            
+    @log_call
+    @staticmethod
+    async def get_orders_by_tg_id(telegram_id: int):
+        async with async_session_factory() as session:
+            query = (
+                select(UsersOrm)
+                .options(selectinload(UsersOrm.paid_orders))
+                .filter(UsersOrm.telegram_id == telegram_id)
+            )
+            res_raw = await session.execute(query)
+            result = res_raw.unique().scalars().all()
+            return result
+            
+    @log_call
+    @staticmethod
+    async def get_order_by_id(order_id: int):
+        async with async_session_factory() as session:
+            query = (
+                select(OrdersOrm)
+                .filter(OrdersOrm.id == order_id)
+            )
+            res_raw = await session.execute(query)
+            result = res_raw.scalar_one_or_none()
+            return result

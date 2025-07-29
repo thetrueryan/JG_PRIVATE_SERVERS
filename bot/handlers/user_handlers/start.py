@@ -25,6 +25,6 @@ async def cmd_start(message: Message, state: FSMContext):
         except IntegrityError as e:
             logger.info(f"IntegrityError: Пользователь с id: {telegram_id} уже есть в базе")
     await message.answer_photo(banner, caption="☑️ Выберите действие", reply_markup=main_menu())
-    await state.set_state(VPNOrder.country)
-    await state.update_data(prev=VPNOrder.country)
+    await state.update_data(prev= await state.get_state())
+    await state.set_state("main_menu")
     

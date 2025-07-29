@@ -18,6 +18,12 @@ class UsersOrm(Base):
     orders: Mapped[list["OrdersOrm"]] = relationship(back_populates="user")
     servers: Mapped[list["ServersOrm"]] = relationship(back_populates="user")
 
+    paid_orders: Mapped[list["OrdersOrm"]] = relationship(
+        back_populates="user",
+        lazy="selectin",
+        primaryjoin="and_(UsersOrm.id == OrdersOrm.user_id, OrdersOrm.status == 'paid')",
+        viewonly=True,
+    )
 
 class ServersOrm(Base):
     __tablename__ = "servers"
@@ -30,7 +36,6 @@ class ServersOrm(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=True)
 
     user: Mapped["UsersOrm"] = relationship(back_populates="servers")
-    
 
 
 class OrdersOrm(Base):
@@ -40,7 +45,7 @@ class OrdersOrm(Base):
     invoice_id: Mapped[bigint]
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     price: Mapped[int]
-    duration_days: Mapped[int]
+    duration_months: Mapped[int]
     status: Mapped[str_256]
     paid_at: Mapped[datetime] = mapped_column(DateTime, nullable=True) 
     expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=True)  

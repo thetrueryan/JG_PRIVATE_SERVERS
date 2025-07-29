@@ -5,13 +5,14 @@ from aiogram.fsm.context import FSMContext
 from bot.states import VPNOrder
 
 from bot.handlers.user_handlers.start import cmd_start
+from bot.handlers.user_handlers.status_handlers import cmd_status_menu
 from bot.handlers.user_handlers.buy_vpn_handlers import (
     cmd_select_vpn_country,
     cmd_select_vpn_type,
     cmd_select_traffic,
     cmd_select_period,
     cmd_select_payment,
-    cmd_crypto_payment_link,
+    cmd_crypto_payment,
     cmd_fiat_payment,
 )
 
@@ -21,7 +22,7 @@ PREV_COMMANDS = {
     VPNOrder.traffic.state: cmd_select_traffic,
     VPNOrder.period.state: cmd_select_period,
     VPNOrder.payment.state: cmd_select_payment,
-    VPNOrder.waiting_payment: cmd_crypto_payment_link,
+    VPNOrder.waiting_payment.state: cmd_crypto_payment,
     "main_menu": cmd_start,
 }
 router = Router()
@@ -30,7 +31,6 @@ router = Router()
 async def cmd_go_back(message: Message, state: FSMContext):
     data = await state.get_data()
     prev = data.get("prev")
-    print(prev)
     if prev:
         await state.set_state(prev)
         bot_func = PREV_COMMANDS.get(prev)

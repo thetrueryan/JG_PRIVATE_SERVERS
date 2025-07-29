@@ -1,4 +1,5 @@
-import asyncio
+
+from typing import Optional
 
 async def calculate_duration(data: dict[str, str]) -> int | None:
     period_multipliers = {
@@ -7,7 +8,7 @@ async def calculate_duration(data: dict[str, str]) -> int | None:
         "⏳ 6 месяцев": 6,
     }
     period = data.get("period") or ""
-    months = period_multipliers.get(period, 1)
+    months = period_multipliers.get(period)
     return months
 
 async def calculate_price(data: dict[str, str]) -> float | None:
@@ -47,3 +48,10 @@ async def calculate_price(data: dict[str, str]) -> float | None:
         return price
     return None
 
+async def calculate_extend_order_price(old_price: float, old_months: int, data: dict[str, str]):
+    months = await calculate_duration(data)
+    if months:
+        old_price_per_month = old_price / old_months
+        new_price = old_price_per_month * months
+        return new_price
+    return None

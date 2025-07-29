@@ -2,6 +2,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    ADMIN_TG_ID: str
     BOT_TOKEN: str
     CRYPTOBOT_API_TOKEN: str
 
@@ -22,5 +23,6 @@ class Settings(BaseSettings):
 settings = Settings() # type: ignore 
 
 DB_URL_asyncpg = settings.DATABASE_URL_asyncpg
+ADMIN_TG_ID = settings.ADMIN_TG_ID
 BOT_TOKEN = settings.BOT_TOKEN
 CRYPTOBOT_API_TOKEN = settings.CRYPTOBOT_API_TOKEN

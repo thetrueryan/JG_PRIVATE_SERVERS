@@ -14,11 +14,10 @@ async def check_invoice_status_loop(invoice: Invoice) -> bool:
         if isinstance(invoices, list):
                 invoice = invoices[0]
                 
-    if invoice.status == "paid":
+    if invoice.status == "expired":
         await AsyncCore.update_paid_status(invoice_id, status_name="paid", paid_at=True, expired_at=True)
         return True
     
-    if invoice.status == "expired":
-         await AsyncCore.update_paid_status(invoice_id, status_name="expired")
-
-    return False
+    if invoice.status == "paid":
+        await AsyncCore.update_paid_status(invoice_id, status_name="paid")
+    return True

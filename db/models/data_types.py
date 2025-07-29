@@ -1,8 +1,8 @@
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import mapped_column
 from sqlalchemy import text, BigInteger
 
 import datetime
-from typing import Annotated, Optional
+from typing import Annotated
 
 
 intpk = Annotated[int, mapped_column(primary_key=True)]
