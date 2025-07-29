@@ -70,7 +70,7 @@ async def cmd_crypto_payment(message: Message, state: FSMContext):
     payment_type = data.get("payment")
     duration = await calculate_duration(data)
     total_price = await calculate_price(data)
-    await message.answer(text=f"Всего к оплате: {total_price:.2f}")
+    await message.answer(text=f"Всего к оплате: {total_price:.2f} руб.")
     if payment_type == "💎 Cryptobot":
         if isinstance(total_price, float) and isinstance(duration, int):
             if message.from_user:
@@ -89,13 +89,15 @@ async def cmd_crypto_payment(message: Message, state: FSMContext):
                             await message.answer("👇 Нажмите, чтобы перейти к оплате (после совершения оплаты нажмите проверить оплату):", reply_markup=inline_payment_menu(payment_url, invoice.invoice_id))
                             await message.answer("❗️<b>Оплатите заказ в течении 15 минут </b>❗️", reply_markup=back_menu())
                             success_status = await check_invoice_status_loop(invoice)
-                            if success_status:
+                            if success_status == "paid":
+                                await AsyncCore.update_paid_status(invoice_id, status_name="paid", paid_at=True, expired_at=True)
                                 await message.answer(text="✅ Оплата прошла успешно!\nФайл подключения будет присалан в течении часа\nДля связи: @ttryan")
                                 await send_order_info_to_admin(
                                     f"<u>Заказ</u>:\nСтрана: {data["country"]}\nТип VPN: {data["vpn_type"]}\nТрафик: {data["traffic"]}\nСрок аренды: {data["period"]}\n",
                                     f"invoice_id: {invoice_id}\ntelegram_user_id: {telegram_id}\npayment_type: {payment_type}\ntotal_price: {total_price:.2f}\n",
                                 )
                             else:
+                                await AsyncCore.update_paid_status(invoice_id, status_name="expired")        
                                 await message.answer(text="❌ Срок оплаты просрочен!")
         else:              
             await message.answer("Не удалось получить ссылку на оплату")

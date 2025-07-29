@@ -5,7 +5,7 @@ from db.repositories.core import AsyncCore
 from payment.crypto_init import crypto
 from config.logger import logger
 
-async def check_invoice_status_loop(invoice: Invoice) -> bool:
+async def check_invoice_status_loop(invoice: Invoice) -> str | None:
     invoice_id = invoice.invoice_id
     logger.info(f"Начало проверки статуса у invoice {invoice_id}")
     while invoice.status == "active":
@@ -13,11 +13,11 @@ async def check_invoice_status_loop(invoice: Invoice) -> bool:
         invoices = await crypto.get_invoices(invoice_ids=[invoice_id])
         if isinstance(invoices, list):
                 invoice = invoices[0]
-                
-    if invoice.status == "expired":
-        await AsyncCore.update_paid_status(invoice_id, status_name="paid", paid_at=True, expired_at=True)
-        return True
-    
+
     if invoice.status == "paid":
-        await AsyncCore.update_paid_status(invoice_id, status_name="paid")
-    return True
+        return "paid"
+
+    if invoice.status == "expired":            
+        return "expired"
+    
+    return None

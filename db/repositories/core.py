@@ -88,8 +88,8 @@ class AsyncCore:
         expired_at: Optional[bool]=False,
         ):
         async with async_session_factory() as session:
-            stmt = select(OrdersOrm).where(OrdersOrm.invoice_id == invoice_id)
-            res = await session.execute(stmt)
+            query = select(OrdersOrm).where(OrdersOrm.invoice_id == invoice_id)
+            res = await session.execute(query)
             order = res.scalar_one_or_none()
             if order:
                 if status_name:
@@ -141,3 +141,37 @@ class AsyncCore:
             res_raw = await session.execute(query)
             result = res_raw.scalar_one_or_none()
             return result
+    
+    @log_call
+    @staticmethod
+    async def updaid_expired_order(
+        order_id: int,
+        new_price: Optional[float]=None,
+        invoice_id: Optional[int]=None,
+        status_name: Optional[str]=None,
+        paid_at: Optional[bool]=False,
+        new_duration: Optional[int]=None,
+    ):
+        async with async_session_factory() as session:
+            query = select(OrdersOrm).where(OrdersOrm.id == order_id)
+            res = await session.execute(query)
+            order = res.scalar_one_or_none()
+            if order:
+                if order.status == "paid":
+                    if invoice_id:
+                        order.invoice_id = invoice_id
+                    if status_name:
+                        order.status = status_name
+                    if paid_at:
+                        current_date = datetime.utcnow()
+                        order.paid_at = current_date
+                        if new_duration:
+                            days_to_expire = (order.expires_at - current_date).days
+                            new_duration_days = new_duration * 30
+                            new_duration_days_sum = days_to_expire + new_duration_days
+                            order.expires_at = current_date + timedelta(days=new_duration_days_sum)
+                        if new_price:
+                            order.price += int(new_price)
+                    await session.commit()
+            else:
+                logger.warning(f"Ордер по id {order_id} не удалось найти и обновить.")

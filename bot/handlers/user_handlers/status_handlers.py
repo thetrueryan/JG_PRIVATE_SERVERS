@@ -5,12 +5,14 @@ from aiogram.fsm.context import FSMContext
 from bot.keyboards.user_keyboard.keyboard_captions import captions
 from bot.keyboards.user_keyboard.status_keyboard import status_menu, continue_menu
 from bot.keyboards.user_keyboard.back_keyboard import back_button
-from bot.keyboards.user_keyboard.buy_vpn_keyboard import select_period_menu, select_payment_menu
+from bot.keyboards.user_keyboard.buy_vpn_keyboard import select_period_menu, select_payment_menu, inline_payment_menu
 from datetime import datetime
 from db.repositories.core import AsyncCore
 from bot.states import VPNOrder
 from payment.crypto_invoice import get_crypto_invoice
-from payment.calculate import calculate_extend_order_price
+from payment.calculate import calculate_extend_order_price, calculate_duration
+from payment.check_invoice_status import check_invoice_status_loop
+from scripts.admin import send_order_info_to_admin
 
 router = Router()
 
@@ -85,6 +87,7 @@ async def cmd_select_order_number_in_status_menu(message: Message, state: FSMCon
     order_id = orders[index]
     await state.update_data(selected_order_id=order_id)
     await message.answer(f"Заказ #{user_input} выбран.\nНажмите <b>Продлжить</b> для выбора срока", reply_markup=continue_menu())
+    await state.update_data(order_number=user_input)
     await state.set_state(VPNOrder.check_select_order)
 
 @router.message(VPNOrder.check_select_order, F.text != "↩️ Назад")
@@ -105,15 +108,37 @@ async def cmd_crypto_invoice(message: Message, state: FSMContext):
     await state.update_data(extend_payment=message.text)
     await state.update_data(prev=VPNOrder.extend_payment)
     if message.from_user:
+        telegram_id = message.from_user.id
         data = await state.get_data()
         order_id = data.get("selected_order_id")
+        order_number = data.get("order_number")
         if isinstance(order_id, int):
             order = await AsyncCore.get_order_by_id(order_id)
             if order:
                 old_price = order.price
                 old_months = order.duration_months
                 new_price = await calculate_extend_order_price(old_price, old_months, data)
+                new_months = await calculate_duration(data)
                 if new_price:
                     invoice = await get_crypto_invoice(new_price)
+                    if invoice:
+                        invoice_id = invoice.invoice_id
+                        order_id = order.id
+                        payment_url = invoice.bot_invoice_url
+                        await state.set_state(VPNOrder.extend_waiting_payment)
+                        await message.answer(text=f"Заказ # {order_number}: Продление аренды")
+                        await message.answer(text=f"Всего к оплате: {new_price:.2f} руб.")
+                        await message.answer("👇 Нажмите, чтобы перейти к оплате (после совершения оплаты нажмите проверить оплату):", reply_markup=inline_payment_menu(payment_url, invoice_id))
+                        await message.answer("❗️<b>Оплатите заказ в течении 15 минут </b>❗️", reply_markup=back_button())
+                        success_status = await check_invoice_status_loop(invoice)
+                        if success_status == "paid":
+                            await AsyncCore.updaid_expired_order(order_id, new_price, invoice_id, "paid", True, new_months)
+                            await message.answer(text=f"✅ Оплата прошла успешно!\nАренда сервера продлена на {new_months} месяца!\nДля связи: @ttryan")
+                            await send_order_info_to_admin(
+                                f"<u>Заказ # {order_id} Продлен</u>: Сумма оплаты: {new_price}, срок: {new_months}\n",
+                                f"invoice_id: {invoice_id}\ntelegram_user_id: {telegram_id}\n",
+                                )
+                        else:      
+                            await message.answer(text="❌ Срок оплаты просрочен!")
         else:
             await message.answer("❌ Не удалось получить ссылку для оплаты")
