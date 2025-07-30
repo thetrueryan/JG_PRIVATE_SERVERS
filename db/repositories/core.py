@@ -166,6 +166,7 @@ class AsyncCore:
                         current_date = datetime.utcnow()
                         order.paid_at = current_date
                         if new_duration:
+                            order.duration_months += new_duration
                             days_to_expire = (order.expires_at - current_date).days
                             new_duration_days = new_duration * 30
                             new_duration_days_sum = days_to_expire + new_duration_days
@@ -175,3 +176,25 @@ class AsyncCore:
                     await session.commit()
             else:
                 logger.warning(f"Ордер по id {order_id} не удалось найти и обновить.")
+        
+    @log_call
+    @staticmethod
+    async def get_orders_list():
+        async with async_session_factory() as session:
+            stmt = select(OrdersOrm).where(OrdersOrm.status == "paid" and OrdersOrm.expires_at != None)
+            res = await session.execute(stmt)
+            if res:
+                orders = res.scalars().all()
+                return orders
+            else:
+                return None
+            
+    @log_call
+    @staticmethod
+    async def get_user_by_id(user_id: int):
+        async with async_session_factory() as session:
+            stmt = select(UsersOrm).where(UsersOrm.id == user_id)
+            res = await session.execute(stmt)
+            if res:
+                user = res.scalar_one_or_none()
+                return user
