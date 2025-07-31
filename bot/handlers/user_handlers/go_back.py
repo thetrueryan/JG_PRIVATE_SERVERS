@@ -26,9 +26,13 @@ from bot.handlers.user_handlers.status_handlers import (
     cmd_select_extend_period,
     cmd_select_extend_payment,
 )
+from bot.handlers.admin_handlers.admin_menu import (
+    cmd_admin_menu
+)
 
 PREV_COMMANDS = {
     "main_menu": cmd_start,
+    "admin_menu": cmd_admin_menu,
     VPNOrder.country.state: cmd_select_vpn_country,
     VPNOrder.vpn_type.state: cmd_select_vpn_type,
     VPNOrder.traffic.state: cmd_select_traffic,
@@ -42,6 +46,14 @@ PREV_COMMANDS = {
     VPNOrder.extend_period.state: cmd_select_order_number_in_status_menu,
     VPNOrder.extend_payment.state: cmd_select_extend_period,
     VPNOrder.extend_waiting_payment.state: cmd_select_extend_payment,
+
+    VPNOrder.send_tg_id.state: cmd_admin_menu,
+    VPNOrder.send_conf.state: cmd_admin_menu,
+    VPNOrder.check_conf.state: cmd_admin_menu,
+    VPNOrder.waiting_for_continue.state: cmd_admin_menu,
+    VPNOrder.send_file_to_user.state: cmd_admin_menu, 
+    VPNOrder.check_message.state: cmd_admin_menu,
+    VPNOrder.send_message_to_user.state: cmd_admin_menu,
 }
 router = Router()
 

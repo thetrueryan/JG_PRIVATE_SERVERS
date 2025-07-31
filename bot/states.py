@@ -26,3 +26,5 @@ class VPNOrder(StatesGroup):
     check_conf = State()
     waiting_for_continue = State()
     send_file_to_user = State()
+    check_message = State()
+    send_message_to_user = State()

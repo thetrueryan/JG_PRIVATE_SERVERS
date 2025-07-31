@@ -5,8 +5,9 @@ from aiogram.utils.keyboard import ReplyKeyboardBuilder
 def admin_menu_keyboard():
     builder = ReplyKeyboardBuilder()
     builder.row(
-        KeyboardButton(text="Отправить файл конфигурации"),
-        KeyboardButton(text="Написать пользователю по TG_ID"),
+        KeyboardButton(text="Отправить файл конфигурации или сообщение"),
+    )
+    builder.row(
         KeyboardButton(text="↩️ Назад"),
     )
     return builder.as_markup(resize_keyboard=True)
@@ -22,7 +23,12 @@ def admin_waiting_keyboard():
 def admin_continue_keyboard():
     builder = ReplyKeyboardBuilder()
     builder.row(
-        KeyboardButton(text="✅ ПРОДОЛЖИТЬ"),
+        KeyboardButton(text="Отправить пользователю конфиг"),
+    )
+    builder.row(
+        KeyboardButton(text="Отправить пользователю текстовое сообщение")
+    )
+    builder.row(
         KeyboardButton(text="↩️ Назад"),
     )
     return builder.as_markup(resize_keyboard=True)

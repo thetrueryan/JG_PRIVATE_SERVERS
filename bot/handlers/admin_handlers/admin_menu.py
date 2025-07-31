@@ -23,10 +23,37 @@ async def cmd_admin_menu(message: Message, state: FSMContext):
             else:
                 pass
 
-@router.message(VPNOrder.admin_menu, F.text == "Отправить файл конфигурации")
-async def cmd_send_telegram_id(message: Message, state: FSMContext):
-    await message.answer("Пришлите telegram_id пользователя которому хотите отправить файл конфигурации", reply_markup=back_button())
+@router.message(VPNOrder.admin_menu, F.text == "Отправить файл конфигурации или сообщение")
+async def cmd_send_telegram_id_conf(message: Message, state: FSMContext):
+    await state.update_data(prev="admin_menu")
+    await message.answer("Пришлите telegram_id пользователя которому хотите отправить файл конфигурации или сообщение", reply_markup=back_button())
     await state.set_state(VPNOrder.send_tg_id)
+
+@router.message(VPNOrder.send_conf, F.text == "Отправить пользователю текстовое сообщение")
+async def cmd_get_message(message: Message, state: FSMContext):
+    await message.answer("Введите сообщение для отправки пользователю")
+    await state.set_state(VPNOrder.check_message)
+
+@router.message(VPNOrder.check_message, F.text != "↩️ Назад")
+async def cmd_check_message(message: Message, state: FSMContext):
+    data = await state.get_data()
+    tg_id = data["tg_id_to_send_config"]
+    sended_message = message.text
+    await state.update_data(message_to_send=sended_message)
+    if message.from_user:
+        await message.answer(f"Нажмите ✅ ОТПРАВИТЬ, чтобы отправить пользователю с id {tg_id}\nСообщение: {sended_message}", reply_markup=admin_waiting_keyboard())
+        await state.set_state(VPNOrder.send_message_to_user)
+
+@router.message(VPNOrder.send_message_to_user, F.text == "✅ ОТПРАВИТЬ")
+async def cmd_send_message(message: Message, state: FSMContext):
+    data = await state.get_data()
+    try:
+        tg_id = data["tg_id_to_send_config"]
+        sended_message = data["message_to_send"]
+        if message.bot:
+            await message.bot.send_message(chat_id=tg_id, text=f"{sended_message}")
+    except Exception as e:
+        await message.answer(f"Возникла ошибка при отправке сообщения {e}")
 
 @router.message(VPNOrder.send_tg_id, F.text != "↩️ Назад")
 async def cmd_check_sended_tg_id(message: Message, state: FSMContext):
@@ -38,7 +65,6 @@ async def cmd_check_sended_tg_id(message: Message, state: FSMContext):
                 if tg_id_int:
                     user = await AsyncCore.get_user_by_tg_id(tg_id_int)
                     if user:
-                        await state.update_data(prev=VPNOrder.admin_menu)
                         await state.update_data(tg_id_to_send_config=tg_id_int)
                         await state.set_state(VPNOrder.send_conf)
                         await message.answer(text=f"Пользователь с i {tg_id_int} успешно найден! Нажмите продолжить чтобы перейти к загрузке файла", reply_markup=admin_continue_keyboard())
@@ -52,10 +78,9 @@ async def cmd_check_sended_tg_id(message: Message, state: FSMContext):
             await message.answer(text="Сообщение с id пользователя не найдено!")
             return
         
-@router.message(VPNOrder.send_conf, F.text != "↩️ Назад")
+@router.message(VPNOrder.send_conf, F.text == "Отправить пользователю конфиг")
 async def cmd_send_config_file(message: Message, state: FSMContext):
     await message.answer("Отправьте файл конфигурации для пользователя", reply_markup=back_button())
-    await state.update_data(prev=VPNOrder.send_conf)
     await state.set_state(VPNOrder.check_conf)
     
 @router.message(VPNOrder.check_conf, F.text != "↩️ Назад")
@@ -87,7 +112,6 @@ async def cmd_check_config_file(message: Message, state: FSMContext):
 async def cmd_wait_for_continue(message: Message, state: FSMContext):
     data = await state.get_data()
     await message.answer(f"Нажмите <b>'отправить'</b>, чтобы отправить файл конфигурации пользовтелю с telegram_id: {data["tg_id_to_send_config"]}", reply_markup=admin_waiting_keyboard())
-    await state.update_data(prev=VPNOrder.send_conf)
     await state.set_state(VPNOrder.send_file_to_user)
 
 @router.message(VPNOrder.send_file_to_user, F.text == "✅ ОТПРАВИТЬ")
