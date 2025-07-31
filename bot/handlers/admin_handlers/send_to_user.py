@@ -76,7 +76,7 @@ async def cmd_check_config_file(message: Message, state: FSMContext):
     if message.from_user:
         if message.document:
             if message.document.file_name:
-                if message.document.file_name.endswith(('.ovpn')):
+                if message.document.file_name.endswith(('.ovpn', '.zip', '.rar', '.txt')):
                     if message.document.file_size:
                         if message.document.file_size > 5 * 1024 * 1024:
                             await message.answer("Файл слишком большой. Максимальный размер - 5MB")

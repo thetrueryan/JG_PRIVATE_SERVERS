@@ -135,9 +135,12 @@ async def cmd_check_crypto_payment_status(callback: CallbackQuery):
 async def cmd_fiat_payment(message: Message, state: FSMContext):
     await state.update_data(payment=message.text)
     await state.update_data(prev=await state.get_state())
-    data = await state.get_data()
-    payment_type = data.get("payment")
-    total_price = await calculate_price(data)
-    if payment_type == "💵 Fiat":
-        await message.answer(text=f"Всего к оплате: {total_price:.2f}")
-        await message.answer(text="Внимание, оплата в фиате сейчас в разработке\nДля оплаты фиатом просьба связяться со мной: @ttryan\n", reply_markup=back_menu())
+    try:
+        data = await state.get_data()
+        payment_type = data.get("payment")
+        total_price = await calculate_price(data)
+        if payment_type == "💵 Fiat":
+            await message.answer(text=f"Всего к оплате: {total_price:.2f}")
+            await message.answer(text="Внимание, оплата в фиате сейчас в разработке\nДля оплаты фиатом просьба связяться со мной: @ttryan\n", reply_markup=back_menu())
+    except:
+        await message.answer("Не удалось получить ссылку на оплату! Попробуйте собрать заказ заново.")

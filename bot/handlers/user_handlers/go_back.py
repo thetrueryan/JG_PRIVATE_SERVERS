@@ -3,13 +3,6 @@ from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 
 from bot.states import VPNOrder
-"""    status = State()
-    select_order = State()
-    check_select_order = State()
-    extend_period = State()
-    extend_payment = State()
-    extend_waiting_payment = State()
-"""
 from bot.handlers.user_handlers.start import cmd_start
 from bot.handlers.user_handlers.buy_vpn_handlers import (
     cmd_select_vpn_country,

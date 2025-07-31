@@ -11,20 +11,6 @@ from db.repositories.core import AsyncCore
 
 router = Router()
 
-"""
-class ServersOrm(Base):
-    __tablename__ = "servers"
-    id: Mapped[intpk]
-    country: Mapped[str_256]
-    vpn_type: Mapped[str_256]
-    traffic: Mapped[str_256]
-    price_per_day: Mapped[int]
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=True)
-
-    user: Mapped["UsersOrm"] = relationship(back_populates="servers")
-
-"""
-
 @router.message(VPNOrder.admin_menu, F.text == "Добавить сервер")
 async def cmd_info_server(message: Message, state: FSMContext):
     await message.answer("Введите информацию о сервере который хотите добавить\nФормат: страна тип_впн трафик стоимость_аренды_в_месяц(на хостинге) tg_user_id(необязательно)\nВводите все данные через пробел, без запятых")
