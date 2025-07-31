@@ -54,6 +54,9 @@ PREV_COMMANDS = {
     VPNOrder.send_file_to_user.state: cmd_admin_menu, 
     VPNOrder.check_message.state: cmd_admin_menu,
     VPNOrder.send_message_to_user.state: cmd_admin_menu,
+
+    VPNOrder.send_server_info: cmd_admin_menu,
+    VPNOrder.add_server: cmd_admin_menu,
 }
 router = Router()
 

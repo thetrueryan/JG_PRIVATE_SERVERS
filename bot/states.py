@@ -19,7 +19,7 @@ class VPNOrder(StatesGroup):
     price = State()
     waiting_payment = State()
 
-    # admin states
+    # admin states users
     admin_menu = State()
     send_tg_id = State()
     send_conf = State()
@@ -28,3 +28,7 @@ class VPNOrder(StatesGroup):
     send_file_to_user = State()
     check_message = State()
     send_message_to_user = State()
+
+    #admin states servers
+    send_server_info = State()
+    add_server = State()

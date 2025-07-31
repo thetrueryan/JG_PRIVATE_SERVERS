@@ -50,14 +50,16 @@ class AsyncCore:
         country: str, 
         vpn_type: str, 
         traffic: str, 
-        price_per_day: int
+        price_per_day: int,
+        user_id: Optional[int]=None,
         ):
         async with async_session_factory() as session:
             new_server = ServersOrm(
                 country=country, 
                 vpn_type=vpn_type, 
                 traffic=traffic, 
-                price_per_day=price_per_day
+                price_per_day=price_per_day,
+                user_id=user_id
                 )
             session.add(new_server)
             await session.commit()

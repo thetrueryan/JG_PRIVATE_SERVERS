@@ -8,6 +8,9 @@ def admin_menu_keyboard():
         KeyboardButton(text="Отправить файл конфигурации или сообщение"),
     )
     builder.row(
+        KeyboardButton(text="Добавить сервер")
+    )
+    builder.row(
         KeyboardButton(text="↩️ Назад"),
     )
     return builder.as_markup(resize_keyboard=True)
@@ -29,6 +32,14 @@ def admin_continue_keyboard():
         KeyboardButton(text="Отправить пользователю текстовое сообщение")
     )
     builder.row(
+        KeyboardButton(text="↩️ Назад"),
+    )
+    return builder.as_markup(resize_keyboard=True)
+
+def admin_add_server_keyboard():
+    builder = ReplyKeyboardBuilder()
+    builder.row(
+        KeyboardButton(text="✅ ДОБАВИТЬ"),
         KeyboardButton(text="↩️ Назад"),
     )
     return builder.as_markup(resize_keyboard=True)
