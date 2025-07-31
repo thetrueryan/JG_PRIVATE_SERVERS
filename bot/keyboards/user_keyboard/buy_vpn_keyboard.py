@@ -15,7 +15,7 @@ def select_country_menu():
     builder.row(
         KeyboardButton(text="↩️ Назад")
     )
-    return builder.as_markup(resize_keyboard=True, input_field_placeholder="Кто такой Джон Голт?")
+    return builder.as_markup(resize_keyboard=True)
 
 
 def select_vpn_type_menu():
@@ -26,7 +26,7 @@ def select_vpn_type_menu():
     builder.row(
         KeyboardButton(text="↩️ Назад")
     )
-    return builder.as_markup(resize_keyboard=True, input_field_placeholder="Кто такой Джон Голт?")
+    return builder.as_markup(resize_keyboard=True)
 
 
 def select_traffic_menu():
@@ -38,7 +38,7 @@ def select_traffic_menu():
     builder.row(
         KeyboardButton(text="↩️ Назад")
     )
-    return builder.as_markup(resize_keyboard=True, input_field_placeholder="Кто такой Джон Голт?")
+    return builder.as_markup(resize_keyboard=True)
 
 
 def select_period_menu():
@@ -51,7 +51,7 @@ def select_period_menu():
     builder.row(
         KeyboardButton(text="↩️ Назад")
     )
-    return builder.as_markup(resize_keyboard=True, input_field_placeholder="Кто такой Джон Голт?")
+    return builder.as_markup(resize_keyboard=True)
 
 
 def select_payment_menu():
@@ -63,7 +63,7 @@ def select_payment_menu():
     builder.row(
         KeyboardButton(text="↩️ Назад")
     )
-    return builder.as_markup(resize_keyboard=True, input_field_placeholder="Кто такой Джон Голт?")
+    return builder.as_markup(resize_keyboard=True)
 
 
 def back_menu():

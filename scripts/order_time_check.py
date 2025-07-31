@@ -5,7 +5,9 @@ from db.repositories.core import AsyncCore
 from scripts.send_orders_warning import send_order_warning_to_user
 from scripts.admin import send_order_info_to_admin
 from config.logger import logger
+from decorators.logging_decorator import log_call
 
+@log_call
 async def check_orders_time_loop():
     while True:
         orders = await AsyncCore.get_orders_list()
@@ -21,6 +23,7 @@ async def check_orders_time_loop():
                     price = order.price
                 if now_time >= expire_time:
                     await send_order_info_to_admin(f"Ордер с id: {order_id} истек.\n id пользователя: {user_id} \n Цена ордера: {price}")
+            logger.info("Круг проверки срока аренды завершен. Ожидаем 12 часов.")
         else:
             logger.info("Не найдено ордеров для проверки")
 

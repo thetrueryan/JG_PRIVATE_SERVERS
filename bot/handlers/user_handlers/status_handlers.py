@@ -35,12 +35,12 @@ async def cmd_status_menu(message: Message, state: FSMContext):
                         current_date.strftime("%d.%m.%Y")
                         exires_date = order.expires_at.strftime("%d.%m.%Y")
                         paid_date = order.paid_at.strftime("%d.%m.%Y")
-                        message_text.append(f"Цена: {order.price} Руб.\nДата оплаты: {paid_date}\nДата окончания: {exires_date}\nДней до истечения: {days_to_expire}")
+                        message_text.append(f"Номер заказа: {order.id}\nПотрачено на аренду: {order.price} Руб.\nДата оплаты: {paid_date}\nДата окончания: {exires_date}\nДней до истечения: {days_to_expire}")
             order_number = 1
             for order in message_text:
-                await message.answer(f"<u>✅Заказ #{order_number}:</u>\n{order}")
+                await message.answer(f"<u>✅Сервер <b>#{order_number}:</b></u>\n{order}")
                 order_number += 1
-            await message.answer(text="❗️Вы можете продлить срок действия заказа нажав оплатить❗️",reply_markup=status_menu())
+            await message.answer(text="❗️Вы можете продлить срок действия аренды сервера нажав оплатить❗️",reply_markup=status_menu())
         else:
             await message.answer("❗️Приобретите сервера для просмотра статуса❗️")
     await state.update_data(orders_ids=orders_id_list)
@@ -57,7 +57,7 @@ async def cmd_select_order_to_pay(message: Message, state: FSMContext):
             for user in result:
                 for order in user.paid_orders:
                     orders_id_list.append(order.id)
-            await message.answer(text="Введите номер заказа для оплаты (например 1)", reply_markup=back_button())
+            await message.answer(text="Введите номер сервера у которого хотите продлить аренду (например 1)", reply_markup=back_button())
             await state.set_state(VPNOrder.select_order)
 
 @router.message(VPNOrder.select_order, F.text != "↩️ Назад")
@@ -70,23 +70,23 @@ async def cmd_select_order_number_in_status_menu(message: Message, state: FSMCon
         return
     
     if not message.text:
-        await message.answer("❌ Заказ для оплаты не найден")
+        await message.answer("❌ Сервер для оплаты не найден")
         return
     
     user_input = message.text.strip()
      
     if not user_input.isdigit():
-        await message.answer("❌ Введите корректный номер заказа (например: 1).")
+        await message.answer("❌ Введите корректный номер сервера (например: 1).")
         return   
     
     index = int(user_input) - 1
     if index < 0 or index >= len(orders):
-        await message.answer("❌ Заказ с таким номером не найден.")
+        await message.answer("❌ Сервер с таким номером не найден.")
         return
 
     order_id = orders[index]
     await state.update_data(selected_order_id=order_id)
-    await message.answer(f"Заказ #{user_input} выбран.\nНажмите <b>Продлжить</b> для выбора срока", reply_markup=continue_menu())
+    await message.answer(f"Сервер #{user_input} выбран.\nНажмите <b>Продлжить</b> для выбора срока", reply_markup=continue_menu())
     await state.update_data(order_number=user_input)
     await state.set_state(VPNOrder.check_select_order)
 
@@ -126,7 +126,7 @@ async def cmd_crypto_invoice(message: Message, state: FSMContext):
                         order_id = order.id
                         payment_url = invoice.bot_invoice_url
                         await state.set_state(VPNOrder.extend_waiting_payment)
-                        await message.answer(text=f"Заказ # {order_number}: Продление аренды")
+                        await message.answer(text=f"Сервер # {order_number}: Продление аренды")
                         await message.answer(text=f"Всего к оплате: {new_price:.2f} руб.")
                         await message.answer("👇 Нажмите, чтобы перейти к оплате (после совершения оплаты нажмите проверить оплату):", reply_markup=inline_payment_menu(payment_url, invoice_id))
                         await message.answer("❗️<b>Оплатите заказ в течении 15 минут </b>❗️", reply_markup=back_button())

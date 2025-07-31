@@ -3,9 +3,14 @@ from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 
 from bot.states import VPNOrder
-
+"""    status = State()
+    select_order = State()
+    check_select_order = State()
+    extend_period = State()
+    extend_payment = State()
+    extend_waiting_payment = State()
+"""
 from bot.handlers.user_handlers.start import cmd_start
-from bot.handlers.user_handlers.status_handlers import cmd_status_menu
 from bot.handlers.user_handlers.buy_vpn_handlers import (
     cmd_select_vpn_country,
     cmd_select_vpn_type,
@@ -13,17 +18,30 @@ from bot.handlers.user_handlers.buy_vpn_handlers import (
     cmd_select_period,
     cmd_select_payment,
     cmd_crypto_payment,
-    cmd_fiat_payment,
+)
+from bot.handlers.user_handlers.status_handlers import (
+    cmd_status_menu,
+    cmd_select_order_number_in_status_menu,
+    cmd_select_order_to_pay,
+    cmd_select_extend_period,
+    cmd_select_extend_payment,
 )
 
 PREV_COMMANDS = {
+    "main_menu": cmd_start,
     VPNOrder.country.state: cmd_select_vpn_country,
     VPNOrder.vpn_type.state: cmd_select_vpn_type,
     VPNOrder.traffic.state: cmd_select_traffic,
     VPNOrder.period.state: cmd_select_period,
     VPNOrder.payment.state: cmd_select_payment,
     VPNOrder.waiting_payment.state: cmd_crypto_payment,
-    "main_menu": cmd_start,
+
+    VPNOrder.status.state: cmd_start,
+    VPNOrder.select_order.state: cmd_status_menu,
+    VPNOrder.check_select_order.state: cmd_select_order_to_pay,
+    VPNOrder.extend_period.state: cmd_select_order_number_in_status_menu,
+    VPNOrder.extend_payment.state: cmd_select_extend_period,
+    VPNOrder.extend_waiting_payment.state: cmd_select_extend_payment,
 }
 router = Router()
 
