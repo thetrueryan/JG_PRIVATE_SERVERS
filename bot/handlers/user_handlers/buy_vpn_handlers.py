@@ -77,6 +77,7 @@ async def cmd_crypto_payment(message: Message, state: FSMContext):
                 invoice = await get_crypto_invoice(total_price)
                 invoice_id = invoice.invoice_id
                 telegram_id = message.from_user.id
+                username = message.from_user.username
                 if telegram_id:
                     user_id = await AsyncCore.get_user_by_tg_id(telegram_id)
                     if user_id:
@@ -94,7 +95,7 @@ async def cmd_crypto_payment(message: Message, state: FSMContext):
                                 await message.answer(text="✅ Оплата прошла успешно!\nФайл подключения будет присалан в течении часа\nДля связи: @ttryan")
                                 await send_order_info_to_admin(
                                     f"<u>Заказ</u>:\nСтрана: {data["country"]}\nТип VPN: {data["vpn_type"]}\nТрафик: {data["traffic"]}\nСрок аренды: {data["period"]}\n",
-                                    f"invoice_id: {invoice_id}\ntelegram_user_id: {telegram_id}\npayment_type: {payment_type}\ntotal_price: {total_price:.2f}\n",
+                                    f"invoice_id: {invoice_id}\ntelegram_user_id: {telegram_id}\nusername: @{username}\npayment_type: {payment_type}\ntotal_price: {total_price:.2f}\n",
                                 )
                             else:
                                 await AsyncCore.update_paid_status(invoice_id, status_name="expired")        

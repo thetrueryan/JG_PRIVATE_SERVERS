@@ -24,13 +24,17 @@ class AsyncCore:
     @staticmethod
     async def add_user(
         telegram_id: int, 
+        username: Optional[str]=None,
         first_name: Optional[str]=None, 
         last_name: Optional[str]=None,
         ):
         async with async_session_factory() as session:
+            if username:
+                username = "@" + username
             try:
                 new_user = UsersOrm(
                     telegram_id=telegram_id, 
+                    username=username,
                     first_name=first_name, 
                     last_name=last_name,
                     )

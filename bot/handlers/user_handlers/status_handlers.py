@@ -109,6 +109,7 @@ async def cmd_crypto_invoice(message: Message, state: FSMContext):
     await state.update_data(prev=VPNOrder.extend_payment)
     if message.from_user:
         telegram_id = message.from_user.id
+        username = message.from_user.username
         data = await state.get_data()
         order_id = data.get("selected_order_id")
         order_number = data.get("order_number")
@@ -136,7 +137,7 @@ async def cmd_crypto_invoice(message: Message, state: FSMContext):
                             await message.answer(text=f"✅ Оплата прошла успешно!\nАренда сервера продлена на {new_months} месяца!\nДля связи: @ttryan")
                             await send_order_info_to_admin(
                                 f"<u>Заказ # {order_id} Продлен</u>: Сумма оплаты: {new_price}, срок: {new_months}\n",
-                                f"invoice_id: {invoice_id}\ntelegram_user_id: {telegram_id}\n",
+                                f"invoice_id: {invoice_id}\ntelegram_user_id: {telegram_id}\nusername: @{username}",
                                 )
                         else:      
                             await message.answer(text="❌ Срок оплаты просрочен!")

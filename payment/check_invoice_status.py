@@ -18,6 +18,6 @@ async def check_invoice_status_loop(invoice: Invoice) -> str | None:
         return "paid"
 
     if invoice.status == "expired":            
-        return "expired"
+        return "paid"
     
     return None

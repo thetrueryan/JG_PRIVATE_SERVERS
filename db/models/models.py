@@ -11,6 +11,7 @@ class UsersOrm(Base):
 
     id: Mapped[intpk]
     telegram_id: Mapped[bigint]
+    username: Mapped[str_256] = mapped_column(nullable=True)
     first_name: Mapped[str_256] = mapped_column(nullable=True)
     last_name: Mapped[str_256] = mapped_column(nullable=True)
     created_at: Mapped[created_at] 
@@ -27,7 +28,6 @@ class UsersOrm(Base):
 
 class ServersOrm(Base):
     __tablename__ = "servers"
-
     id: Mapped[intpk]
     country: Mapped[str_256]
     vpn_type: Mapped[str_256]
