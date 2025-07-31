@@ -9,6 +9,7 @@ from scripts.order_time_check import check_orders_time_loop
 
 async def main():
     logging.basicConfig(level=logging.INFO)
+    await AsyncCore.create_tables()
     await asyncio.gather(
         check_orders_time_loop(),
         dp.start_polling(bot),

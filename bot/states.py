@@ -32,3 +32,7 @@ class VPNOrder(StatesGroup):
     #admin states servers
     send_server_info = State()
     add_server = State()
+
+    #admin states orders
+    select_order_add_type = State()
+    add_order = State()

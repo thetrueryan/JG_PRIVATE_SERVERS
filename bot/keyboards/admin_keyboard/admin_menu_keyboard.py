@@ -8,7 +8,8 @@ def admin_menu_keyboard():
         KeyboardButton(text="Отправить файл конфигурации или сообщение"),
     )
     builder.row(
-        KeyboardButton(text="Добавить сервер")
+        KeyboardButton(text="Добавить сервер"),
+        KeyboardButton(text="Добавить ордер")
     )
     builder.row(
         KeyboardButton(text="↩️ Назад"),
@@ -40,6 +41,18 @@ def admin_add_server_keyboard():
     builder = ReplyKeyboardBuilder()
     builder.row(
         KeyboardButton(text="✅ ДОБАВИТЬ"),
+        KeyboardButton(text="↩️ Назад"),
+    )
+    return builder.as_markup(resize_keyboard=True)
+
+
+def admin_order_add_type_keyboard():
+    builder = ReplyKeyboardBuilder()
+    builder.row(
+        KeyboardButton(text="Добавить новый ордер"),
+        KeyboardButton(text="Обновить существующий"),
+    )
+    builder.row(
         KeyboardButton(text="↩️ Назад"),
     )
     return builder.as_markup(resize_keyboard=True)

@@ -81,7 +81,7 @@ async def cmd_crypto_payment(message: Message, state: FSMContext):
                 if telegram_id:
                     user_id = await AsyncCore.get_user_by_tg_id(telegram_id)
                     if user_id:
-                        await AsyncCore.add_order(user_id, invoice_id, total_price, duration)
+                        await AsyncCore.add_order(user_id, total_price, duration, invoice_id)
                         payment_url = invoice.bot_invoice_url
                         if payment_url:
                             await state.update_data(payment_start_time=datetime.now().isoformat())
@@ -92,7 +92,7 @@ async def cmd_crypto_payment(message: Message, state: FSMContext):
                             success_status = await check_invoice_status_loop(invoice)
                             if success_status == "paid":
                                 await AsyncCore.update_paid_status(invoice_id, status_name="paid", paid_at=True, expired_at=True)
-                                await message.answer(text="✅ Оплата прошла успешно!\nФайл подключения будет присалан в течении часа\nДля связи: @ttryan")
+                                await message.answer(text="✅ Оплата прошла успешно!\nФайл подключения будет присалан сразу как мы настроим сервер\nДля связи: @ttryan")
                                 await send_order_info_to_admin(
                                     f"<u>Заказ</u>:\nСтрана: {data["country"]}\nТип VPN: {data["vpn_type"]}\nТрафик: {data["traffic"]}\nСрок аренды: {data["period"]}\n",
                                     f"invoice_id: {invoice_id}\ntelegram_user_id: {telegram_id}\nusername: @{username}\npayment_type: {payment_type}\ntotal_price: {total_price:.2f}\n",
@@ -136,11 +136,19 @@ async def cmd_fiat_payment(message: Message, state: FSMContext):
     await state.update_data(payment=message.text)
     await state.update_data(prev=await state.get_state())
     try:
-        data = await state.get_data()
-        payment_type = data.get("payment")
-        total_price = await calculate_price(data)
-        if payment_type == "💵 Fiat":
-            await message.answer(text=f"Всего к оплате: {total_price:.2f}")
-            await message.answer(text="Внимание, оплата в фиате сейчас в разработке\nДля оплаты фиатом просьба связяться со мной: @ttryan\n", reply_markup=back_menu())
+        if message.from_user:
+            data = await state.get_data()
+            username = message.from_user.username
+            telegram_id = message.from_user.id
+            duration = await calculate_duration(data)
+            payment_type = data.get("payment")
+            total_price = await calculate_price(data)
+            if payment_type == "💵 Fiat":
+                await message.answer(text=f"Всего к оплате: {total_price:.2f}")
+                await message.answer(text="Внимание, оплата в фиате сейчас в разработке\nДля оплаты фиатом просьба связяться со мной: @ttryan\n", reply_markup=back_menu())
+                await send_order_info_to_admin( f"<u>Заказ</u>:\nСтрана: {data["country"]}\nТип VPN: {data["vpn_type"]}\nТрафик: {data["traffic"]}\nСрок аренды: {data["period"]}\n",
+                                    f"telegram_user_id: {telegram_id}\nusername: @{username}\npayment_type: {payment_type}\ntotal_price: {total_price:.2f}\n")
+                await send_order_info_to_admin("Поступила заявка с оплатой фиатом. После того как пользователь свяжется с вами и оплатит, скопируйте сообщение ниже и вставьте в добавление ордера в /admin меню.")
+                await send_order_info_to_admin(f"{telegram_id} {total_price} {duration}")
     except:
         await message.answer("Не удалось получить ссылку на оплату! Попробуйте собрать заказ заново.")

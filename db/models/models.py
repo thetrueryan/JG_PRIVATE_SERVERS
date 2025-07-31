@@ -37,12 +37,11 @@ class ServersOrm(Base):
 
     user: Mapped["UsersOrm"] = relationship(back_populates="servers")
 
-
 class OrdersOrm(Base):
     __tablename__ = "orders"
 
     id: Mapped[intpk]
-    invoice_id: Mapped[bigint]
+    invoice_id: Mapped[bigint] = mapped_column(nullable=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     price: Mapped[int]
     duration_months: Mapped[int]
