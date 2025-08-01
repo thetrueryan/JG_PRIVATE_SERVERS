@@ -1,5 +1,5 @@
 import asyncio
-from aiocryptopay.models.invoice import Invoice
+from aiocryptopay.models.invoice import Invoice # type: ignore[import-untyped]
 
 from db.repositories.core import AsyncCore
 from payment.crypto_init import crypto

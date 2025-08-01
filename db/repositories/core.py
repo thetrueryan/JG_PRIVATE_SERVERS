@@ -131,7 +131,8 @@ class AsyncCore:
             user_id = res.scalar_one_or_none()
             if user_id:
                 return int(user_id)
-
+            return None
+        
     @log_call
     @staticmethod
     async def get_orders_by_tg_id(telegram_id: int):

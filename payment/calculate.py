@@ -13,7 +13,7 @@ async def calculate_duration(data: dict[str, str]) -> int | None:
 
 
 async def calculate_price(data: dict[str, str]) -> float | None:
-    price = 0
+    price = 0.0
     country_prices = {
         "🇫🇮 Финляндия": 15,
         "🇫🇷 Франция": 15,
@@ -44,7 +44,7 @@ async def calculate_price(data: dict[str, str]) -> float | None:
             ip_price = 60
         elif months == 3:
             ip_price = 30
-        price = (base * months + ip_price) * 1.1
+        price = float((base * months + ip_price) * 1.1)
 
         return price
     return None
