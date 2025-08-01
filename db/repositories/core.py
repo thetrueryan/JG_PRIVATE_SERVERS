@@ -72,6 +72,7 @@ class AsyncCore:
         price: float,
         duration_months: int,
         invoice_id: Optional[int]=None,
+        return_id: Optional[bool]=False,
         ):
         async with async_session_factory() as session:
             new_order = OrdersOrm(
@@ -84,12 +85,15 @@ class AsyncCore:
             session.add(new_order)
             await session.commit()
             await session.refresh(new_order)
-            
+            if return_id:
+                return new_order.id
+            return None
+        
     @log_call
     @staticmethod
     async def update_paid_status(
         invoice_id: Optional[int]=None,
-        user_id: Optional[int]=None, 
+        order_id: Optional[int]=None, 
         status_name: Optional[str]=None, 
         paid_at: Optional[bool]=False,
         expired_at: Optional[bool]=False,
@@ -97,8 +101,8 @@ class AsyncCore:
         async with async_session_factory() as session:
             if invoice_id:
                 query = select(OrdersOrm).where(OrdersOrm.invoice_id == invoice_id)
-            if user_id:
-                query = select(OrdersOrm).where(OrdersOrm.user_id == user_id)
+            if order_id:
+                query = select(OrdersOrm).where(OrdersOrm.id == order_id)
             res = await session.execute(query)
             order = res.scalar_one_or_none()
             if order:
@@ -208,3 +212,5 @@ class AsyncCore:
             if res:
                 user = res.scalar_one_or_none()
                 return user
+    
+            

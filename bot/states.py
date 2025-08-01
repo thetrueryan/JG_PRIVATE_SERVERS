@@ -36,3 +36,4 @@ class VPNOrder(StatesGroup):
     #admin states orders
     select_order_add_type = State()
     add_order = State()
+    update_order = State()

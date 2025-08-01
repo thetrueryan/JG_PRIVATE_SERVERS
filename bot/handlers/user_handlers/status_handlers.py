@@ -103,8 +103,8 @@ async def cmd_select_extend_payment(message: Message, state: FSMContext):
     await message.answer(text="Выберите тип оплаты", reply_markup=select_payment_menu())
     await state.set_state(VPNOrder.extend_payment)
 
-@router.message(VPNOrder.extend_payment, F.text != "↩️ Назад")
-async def cmd_crypto_invoice(message: Message, state: FSMContext):
+@router.message(VPNOrder.extend_payment, F.text == "💎 Cryptobot")
+async def cmd_crypto_status_invoice(message: Message, state: FSMContext):
     await state.update_data(extend_payment=message.text)
     await state.update_data(prev=VPNOrder.extend_payment)
     if message.from_user:
@@ -139,7 +139,37 @@ async def cmd_crypto_invoice(message: Message, state: FSMContext):
                                 f"<u>Заказ # {order_id} Продлен</u>: Сумма оплаты: {new_price}, срок: {new_months}\n",
                                 f"invoice_id: {invoice_id}\ntelegram_user_id: {telegram_id}\nusername: @{username}",
                                 )
-                        else:      
+                        else:
+                            await AsyncCore.update_paid_status(invoice_id, status_name="expired")      
                             await message.answer(text="❌ Срок оплаты просрочен!")
         else:
             await message.answer("❌ Не удалось получить ссылку для оплаты")
+
+@router.message(VPNOrder.extend_payment, F.text == "💵 Fiat")
+async def cmd_fiat_status_invoice(message: Message, state: FSMContext):
+    await state.update_data(extend_payment=message.text)
+    await state.update_data(prev=VPNOrder.extend_payment)
+    try:
+        if message.from_user:
+            telegram_id = message.from_user.id
+            username = message.from_user.username
+            data = await state.get_data()
+            order_id = data.get("selected_order_id")
+            if isinstance(order_id, int):
+                order = await AsyncCore.get_order_by_id(order_id)
+                if order:
+                    old_price = order.price
+                    old_months = order.duration_months
+                    new_price = await calculate_extend_order_price(old_price, old_months, data)
+                    new_months = await calculate_duration(data)
+                    if new_price:
+                        await message.answer(text=f"Всего к оплате: {new_price:.2f}")
+                        await message.answer(text="Внимание, оплата в фиате сейчас в разработке\nДля оплаты фиатом просьба связяться со мной: @ttryan\n", reply_markup=back_button())
+                        await send_order_info_to_admin(
+                                    f"<u>Заказ # {order_id} Заявка на продление</u>: Тип оплаты: 💵 Fiat, Сумма оплаты: {new_price}, срок: {new_months}\n",
+                                    f"telegram_user_id: {telegram_id}\nusername: @{username}",
+                                    )
+                        await send_order_info_to_admin("Поступила заявка с оплатой фиатом. После того как пользователь свяжется с вами и оплатит, скопируйте сообщение ниже и вставьте в обновление ордера в /admin меню.")
+                        await send_order_info_to_admin(f"{order_id} {new_price} paid {new_months}")
+    except:
+        await message.answer("Не удалось получить ссылку на оплату! Попробуйте собрать заказ заново.")
