@@ -1,7 +1,6 @@
 import logging
 from logging.handlers import RotatingFileHandler
 
-
 logger = logging.getLogger("vpn_bot")
 logger.setLevel(logging.DEBUG)
 

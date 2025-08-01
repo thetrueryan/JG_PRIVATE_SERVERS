@@ -1,8 +1,8 @@
 import asyncio
 import logging
 
-from bot.dispatcher import dp
 from bot.bot import bot
+from bot.dispatcher import dp
 from db.repositories.core import AsyncCore
 from scripts.order_time_check import check_orders_time_loop
 

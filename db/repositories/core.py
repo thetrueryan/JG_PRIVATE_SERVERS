@@ -1,15 +1,15 @@
-from sqlalchemy.exc import IntegrityError
+from datetime import datetime, timedelta
+from typing import Optional
+
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import selectinload
 
-from typing import Optional
-from datetime import datetime, timedelta
-
-from db.models.database import Base
-from db.models.models import UsersOrm, ServersOrm, OrdersOrm
-from db.session import async_session_factory, async_engine
-from decorators.logging_decorator import log_call
 from config.logger import logger
+from db.models.database import Base
+from db.models.models import OrdersOrm, ServersOrm, UsersOrm
+from db.session import async_engine, async_session_factory
+from decorators.logging_decorator import log_call
 
 
 class AsyncCore:
@@ -132,7 +132,7 @@ class AsyncCore:
             if user_id:
                 return int(user_id)
             return None
-        
+
     @log_call
     @staticmethod
     async def get_orders_by_tg_id(telegram_id: int):

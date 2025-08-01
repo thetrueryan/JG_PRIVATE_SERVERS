@@ -1,13 +1,11 @@
-from aiogram.types import Message, FSInputFile
 from aiogram import F, Router
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
-
+from aiogram.types import FSInputFile, Message
 from sqlalchemy.exc import IntegrityError
-from config.logger import logger
 
 from bot.keyboards.user_keyboard.main_menu_keyboard import main_menu
-from bot.states import VPNOrder
+from config.logger import logger
 from db.repositories.core import AsyncCore
 
 router = Router()

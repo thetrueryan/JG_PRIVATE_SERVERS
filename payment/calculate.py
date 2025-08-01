@@ -1,6 +1,3 @@
-from typing import Optional
-
-
 async def calculate_duration(data: dict[str, str]) -> int | None:
     period_multipliers = {
         "⏳ 1 месяц": 1,

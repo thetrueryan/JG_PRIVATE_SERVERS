@@ -1,6 +1,7 @@
-from payment.crypto_init import crypto
-from aiocryptopay.models.invoice import Invoice # type: ignore[import-untyped]
+from aiocryptopay.models.invoice import Invoice  # type: ignore[import-untyped]
+
 from decorators.logging_decorator import log_call
+from payment.crypto_init import crypto
 
 
 @log_call

@@ -1,24 +1,25 @@
-from aiogram.types import Message, FSInputFile, CallbackQuery
+from datetime import datetime
+
 from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
-from datetime import datetime, timedelta
+from aiogram.types import CallbackQuery, FSInputFile, Message
 
-from bot.states import VPNOrder
 from bot.keyboards.user_keyboard.buy_vpn_keyboard import (
-    select_country_menu,
-    select_vpn_type_menu,
-    select_traffic_menu,
-    select_period_menu,
-    select_payment_menu,
-    inline_payment_menu,
     back_menu,
+    inline_payment_menu,
+    select_country_menu,
+    select_payment_menu,
+    select_period_menu,
+    select_traffic_menu,
+    select_vpn_type_menu,
 )
 from bot.keyboards.user_keyboard.keyboard_captions import captions
-from payment.calculate import calculate_price, calculate_duration
+from bot.states import VPNOrder
+from db.repositories.core import AsyncCore
+from payment.calculate import calculate_duration, calculate_price
 from payment.check_invoice_status import check_invoice_status_loop
 from payment.crypto_init import crypto
 from payment.crypto_invoice import get_crypto_invoice
-from db.repositories.core import AsyncCore
 from scripts.admin import send_order_info_to_admin
 
 router = Router()

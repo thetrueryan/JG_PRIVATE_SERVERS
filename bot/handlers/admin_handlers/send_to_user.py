@@ -1,17 +1,14 @@
-from aiogram.types import Message, FSInputFile
 from aiogram import F, Router
-from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
+from aiogram.types import Message
 
-from bot.states import VPNOrder
 from bot.keyboards.admin_keyboard.admin_menu_keyboard import (
-    admin_menu_keyboard,
-    admin_waiting_keyboard,
     admin_continue_keyboard,
+    admin_waiting_keyboard,
 )
 from bot.keyboards.user_keyboard.back_keyboard import back_button
+from bot.states import VPNOrder
 from db.repositories.core import AsyncCore
-
 
 router = Router()
 

@@ -1,9 +1,10 @@
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, DateTime
 from datetime import datetime
 
+from sqlalchemy import DateTime, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from db.models.data_types import bigint, created_at, intpk, str_256
 from db.models.database import Base
-from db.models.data_types import intpk, created_at, str_256, bigint
 
 
 class UsersOrm(Base):

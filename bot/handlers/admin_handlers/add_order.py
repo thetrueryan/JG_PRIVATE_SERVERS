@@ -1,17 +1,13 @@
-from aiogram.types import Message, FSInputFile
 from aiogram import F, Router
-from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
+from aiogram.types import Message
 
-from bot.states import VPNOrder
-from config.settings import ADMIN_TG_ID
 from bot.keyboards.admin_keyboard.admin_menu_keyboard import (
-    admin_menu_keyboard,
-    admin_waiting_keyboard,
-    admin_continue_keyboard,
     admin_order_add_type_keyboard,
 )
 from bot.keyboards.user_keyboard.back_keyboard import back_button
+from bot.states import VPNOrder
+from config.settings import ADMIN_TG_ID
 from db.repositories.core import AsyncCore
 
 router = Router()
@@ -59,7 +55,6 @@ async def add_new_order(message: Message, state: FSMContext):
                         order_id = await AsyncCore.add_order(
                             user_id, price, duration, return_id=True
                         )
-                        await message.answer(f"{order_id}")
                         await AsyncCore.update_paid_status(
                             order_id=order_id,
                             status_name="paid",

@@ -1,25 +1,25 @@
-from aiogram.types import Message, FSInputFile
 from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
+from aiogram.types import Message
 
-from bot.states import VPNOrder
-from bot.handlers.user_handlers.start import cmd_start
+from bot.handlers.admin_handlers.admin_menu import cmd_admin_menu
 from bot.handlers.user_handlers.buy_vpn_handlers import (
+    cmd_crypto_payment,
+    cmd_select_payment,
+    cmd_select_period,
+    cmd_select_traffic,
     cmd_select_vpn_country,
     cmd_select_vpn_type,
-    cmd_select_traffic,
-    cmd_select_period,
-    cmd_select_payment,
-    cmd_crypto_payment,
 )
+from bot.handlers.user_handlers.start import cmd_start
 from bot.handlers.user_handlers.status_handlers import (
-    cmd_status_menu,
+    cmd_select_extend_payment,
+    cmd_select_extend_period,
     cmd_select_order_number_in_status_menu,
     cmd_select_order_to_pay,
-    cmd_select_extend_period,
-    cmd_select_extend_payment,
+    cmd_status_menu,
 )
-from bot.handlers.admin_handlers.admin_menu import cmd_admin_menu
+from bot.states import VPNOrder
 
 PREV_COMMANDS = {
     "main_menu": cmd_start,

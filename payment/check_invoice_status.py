@@ -1,9 +1,9 @@
 import asyncio
-from aiocryptopay.models.invoice import Invoice # type: ignore[import-untyped]
 
-from db.repositories.core import AsyncCore
-from payment.crypto_init import crypto
+from aiocryptopay.models.invoice import Invoice  # type: ignore[import-untyped]
+
 from config.logger import logger
+from payment.crypto_init import crypto
 
 
 async def check_invoice_status_loop(invoice: Invoice) -> str | None:
