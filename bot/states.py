@@ -1,5 +1,6 @@
 from aiogram.fsm.state import State, StatesGroup
 
+
 class VPNOrder(StatesGroup):
     # status states
     status = State()
@@ -29,11 +30,11 @@ class VPNOrder(StatesGroup):
     check_message = State()
     send_message_to_user = State()
 
-    #admin states servers
+    # admin states servers
     send_server_info = State()
     add_server = State()
 
-    #admin states orders
+    # admin states orders
     select_order_add_type = State()
     add_order = State()
     update_order = State()

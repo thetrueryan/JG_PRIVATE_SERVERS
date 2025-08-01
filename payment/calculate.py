@@ -1,5 +1,5 @@
-
 from typing import Optional
+
 
 async def calculate_duration(data: dict[str, str]) -> int | None:
     period_multipliers = {
@@ -10,6 +10,7 @@ async def calculate_duration(data: dict[str, str]) -> int | None:
     period = data.get("period") or ""
     months = period_multipliers.get(period)
     return months
+
 
 async def calculate_price(data: dict[str, str]) -> float | None:
     price = 0
@@ -34,9 +35,9 @@ async def calculate_price(data: dict[str, str]) -> float | None:
     months = await calculate_duration(data)
     if months:
         base = (
-            country_prices.get(country, 0) +
-            vpn_type_prices.get(vpn_type, 0) +
-            traffic_prices.get(traffic, 0)
+            country_prices.get(country, 0)
+            + vpn_type_prices.get(vpn_type, 0)
+            + traffic_prices.get(traffic, 0)
         )
         ip_price = 0
         if months == 1:
@@ -48,7 +49,10 @@ async def calculate_price(data: dict[str, str]) -> float | None:
         return price
     return None
 
-async def calculate_extend_order_price(old_price: float, old_months: int, data: dict[str, str]):
+
+async def calculate_extend_order_price(
+    old_price: float, old_months: int, data: dict[str, str]
+):
     months = await calculate_duration(data)
     if months:
         old_price_per_month = old_price / old_months

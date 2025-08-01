@@ -13,4 +13,5 @@ def log_call(func):
         except Exception as e:
             logger.exception(f"Exception in {func.__name__}: {e}")
             raise
+
     return _wrapper

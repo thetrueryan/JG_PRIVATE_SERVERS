@@ -8,7 +8,8 @@ def main_menu():
         KeyboardButton(text="🛒 Купить сервер"),
     )
     builder.row(
-        KeyboardButton(text="ℹ️ Статус"),
-        KeyboardButton(text="🗣️ Обратная связь")
+        KeyboardButton(text="ℹ️ Статус"), KeyboardButton(text="🗣️ Обратная связь")
     )
-    return builder.as_markup(resize_keyboard=True, input_field_placeholder="Кто такой Джон Голт?")
+    return builder.as_markup(
+        resize_keyboard=True, input_field_placeholder="Кто такой Джон Голт?"
+    )

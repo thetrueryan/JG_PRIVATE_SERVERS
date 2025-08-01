@@ -10,6 +10,5 @@ bigint = Annotated[int, mapped_column(BigInteger, nullable=False, unique=True)]
 str_256 = Annotated[str, 256]
 
 created_at = Annotated[
-    datetime.datetime, mapped_column(
-    server_default=text("TIMEZONE ('utc', now())"))
-    ]
+    datetime.datetime, mapped_column(server_default=text("TIMEZONE ('utc', now())"))
+]

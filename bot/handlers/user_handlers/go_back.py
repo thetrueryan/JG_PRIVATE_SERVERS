@@ -19,9 +19,7 @@ from bot.handlers.user_handlers.status_handlers import (
     cmd_select_extend_period,
     cmd_select_extend_payment,
 )
-from bot.handlers.admin_handlers.admin_menu import (
-    cmd_admin_menu
-)
+from bot.handlers.admin_handlers.admin_menu import cmd_admin_menu
 
 PREV_COMMANDS = {
     "main_menu": cmd_start,
@@ -32,26 +30,24 @@ PREV_COMMANDS = {
     VPNOrder.period.state: cmd_select_period,
     VPNOrder.payment.state: cmd_select_payment,
     VPNOrder.waiting_payment.state: cmd_crypto_payment,
-
     VPNOrder.status.state: cmd_start,
     VPNOrder.select_order.state: cmd_status_menu,
     VPNOrder.check_select_order.state: cmd_select_order_to_pay,
     VPNOrder.extend_period.state: cmd_select_order_number_in_status_menu,
     VPNOrder.extend_payment.state: cmd_select_extend_period,
     VPNOrder.extend_waiting_payment.state: cmd_select_extend_payment,
-
     VPNOrder.send_tg_id.state: cmd_admin_menu,
     VPNOrder.send_conf.state: cmd_admin_menu,
     VPNOrder.check_conf.state: cmd_admin_menu,
     VPNOrder.waiting_for_continue.state: cmd_admin_menu,
-    VPNOrder.send_file_to_user.state: cmd_admin_menu, 
+    VPNOrder.send_file_to_user.state: cmd_admin_menu,
     VPNOrder.check_message.state: cmd_admin_menu,
     VPNOrder.send_message_to_user.state: cmd_admin_menu,
-
     VPNOrder.send_server_info: cmd_admin_menu,
     VPNOrder.add_server: cmd_admin_menu,
 }
 router = Router()
+
 
 @router.message(F.text == "↩️ Назад")
 async def cmd_go_back(message: Message, state: FSMContext):

@@ -14,7 +14,7 @@ class UsersOrm(Base):
     username: Mapped[str_256] = mapped_column(nullable=True)
     first_name: Mapped[str_256] = mapped_column(nullable=True)
     last_name: Mapped[str_256] = mapped_column(nullable=True)
-    created_at: Mapped[created_at] 
+    created_at: Mapped[created_at]
 
     orders: Mapped[list["OrdersOrm"]] = relationship(back_populates="user")
     servers: Mapped[list["ServersOrm"]] = relationship(back_populates="user")
@@ -25,6 +25,7 @@ class UsersOrm(Base):
         primaryjoin="and_(UsersOrm.id == OrdersOrm.user_id, OrdersOrm.status == 'paid')",
         viewonly=True,
     )
+
 
 class ServersOrm(Base):
     __tablename__ = "servers"
@@ -37,6 +38,7 @@ class ServersOrm(Base):
 
     user: Mapped["UsersOrm"] = relationship(back_populates="servers")
 
+
 class OrdersOrm(Base):
     __tablename__ = "orders"
 
@@ -46,7 +48,7 @@ class OrdersOrm(Base):
     price: Mapped[int]
     duration_months: Mapped[int]
     status: Mapped[str_256]
-    paid_at: Mapped[datetime] = mapped_column(DateTime, nullable=True) 
-    expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=True)  
+    paid_at: Mapped[datetime] = mapped_column(DateTime, nullable=True)
+    expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=True)
 
     user: Mapped["UsersOrm"] = relationship(back_populates="orders")
