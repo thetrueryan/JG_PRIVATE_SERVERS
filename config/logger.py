@@ -1,5 +1,8 @@
+import os
 import logging
 from logging.handlers import RotatingFileHandler
+
+os.makedirs("./logs/", exist_ok=True)
 
 logger = logging.getLogger("vpn_bot")
 logger.setLevel(logging.DEBUG)

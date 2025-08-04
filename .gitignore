@@ -6,7 +6,7 @@ __pycache__/
 # Virtual environment
 venv/
 .env/
-.env.*
+.env
 
 # VS Code
 .vscode/
@@ -14,13 +14,11 @@ venv/
 # PyCharm
 .idea/
 
-# SQLite / PostgreSQL
-*.sqlite3
+# PostgreSQL
 *.db
 
 # Logs
 *.log
-
 
 # macOS / Linux / Windows junk
 .DS_Store
