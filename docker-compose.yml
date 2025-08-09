@@ -1,0 +1,44 @@
+services:
+  tg_bot:
+    image: jg_servers_bot:stable
+    depends_on: 
+      - data_base
+    container_name: jg_bot
+    environment:
+      DB_PASS: ${DB_PASS}
+      DB_USER: ${DB_USER}
+      DB_NAME: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
+      DB_HOST: ${DB_HOST}
+  
+      ADMIN_TG_ID: ${ADMIN_TG_ID}
+      BOT_TOKEN: ${BOT_TOKEN}
+      CRYPTOBOT_API_TOKEN: ${CRYPTOBOT_API_TOKEN}
+    volumes:
+      - bot_logs:/jg_servers_app/src/logs 
+    restart: unless-stopped
+    networks:
+      - app_network
+
+  data_base:
+    image: postgres:15-alpine
+    container_name: jg_data_base
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_NAME}
+    restart: unless-stopped
+    networks:
+      - app_network
+
+volumes:
+  postgres_data:
+  bot_logs:
+
+networks:
+  app_network:
+    driver: bridge
