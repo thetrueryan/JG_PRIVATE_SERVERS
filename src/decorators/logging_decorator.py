@@ -1,6 +1,6 @@
 from functools import wraps
 
-from config.logger import logger
+from loggers.logger import logger
 
 
 def log_call(func):

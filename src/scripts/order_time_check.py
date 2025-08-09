@@ -1,7 +1,7 @@
 import asyncio
 from datetime import datetime, timedelta
 
-from config.logger import logger
+from loggers.logger import logger
 from db.repositories.core import AsyncCore
 from decorators.logging_decorator import log_call
 from scripts.admin import send_order_info_to_admin

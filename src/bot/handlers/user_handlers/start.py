@@ -5,7 +5,7 @@ from aiogram.types import FSInputFile, Message
 from sqlalchemy.exc import IntegrityError
 
 from bot.keyboards.user_keyboard.main_menu_keyboard import main_menu
-from config.logger import logger
+from loggers.logger import logger
 from db.repositories.core import AsyncCore
 
 router = Router()

@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import selectinload
 
-from config.logger import logger
+from loggers.logger import logger
 from db.models.database import Base
 from db.models.models import OrdersOrm, ServersOrm, UsersOrm
 from db.session import async_engine, async_session_factory
@@ -40,7 +40,6 @@ class AsyncCore:
                 )
                 session.add(new_user)
                 await session.commit()
-                await session.refresh(new_user)
             except IntegrityError as e:
                 logger.warning(
                     f"IntegrityError: Пользователь с id {telegram_id} уже есть в базе."
