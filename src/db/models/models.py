@@ -3,8 +3,8 @@ from datetime import datetime
 from sqlalchemy import DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from db.models.data_types import bigint, created_at, intpk, str_256
-from db.models.database import Base
+from src.db.models.data_types import bigint, created_at, intpk, str_256
+from src.db.models.database import Base
 
 
 class UsersOrm(Base):

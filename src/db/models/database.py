@@ -1,7 +1,7 @@
 from sqlalchemy import String
 from sqlalchemy.orm import DeclarativeBase
 
-from db.models.data_types import str_256
+from src.db.models.data_types import str_256
 
 
 class Base(DeclarativeBase):

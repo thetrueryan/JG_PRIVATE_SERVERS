@@ -1,5 +1,8 @@
+from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+BASE_PATH = Path(__file__).resolve().parent.parent.parent
 
 class Settings(BaseSettings):
     ADMIN_TG_ID: str
@@ -16,7 +19,7 @@ class Settings(BaseSettings):
     def DATABASE_URL_asyncpg(self):
         return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
-    model_config = SettingsConfigDict(env_file="../.env")
+    model_config = SettingsConfigDict(env_file=BASE_PATH / ".env")
 
 
 settings = Settings()  # type: ignore
