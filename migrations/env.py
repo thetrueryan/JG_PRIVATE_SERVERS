@@ -5,7 +5,7 @@ from sqlalchemy import pool
 
 from alembic import context
 from src.core.settings import DB_URL_asyncpg
-from models.models import Base, UsersOrm, OrdersOrm, ServersOrm  # noqa
+from src.models.models import Base, UsersOrm, OrdersOrm, ServersOrm  # noqa
 
 
 config = context.config
