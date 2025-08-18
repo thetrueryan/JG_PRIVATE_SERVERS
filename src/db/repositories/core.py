@@ -6,8 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import selectinload
 
 from loggers.logger import logger
-from db.models.database import Base
-from db.models.models import OrdersOrm, ServersOrm, UsersOrm
+from db.models import Base, OrdersOrm, ServersOrm, UsersOrm
 from db.session import async_engine, async_session_factory
 from decorators.logging_decorator import log_call
 

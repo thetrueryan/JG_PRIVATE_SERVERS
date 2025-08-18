@@ -1,5 +1,5 @@
 from bot.bot import bot
-from db.models.models import OrdersOrm
+from db.models import OrdersOrm
 from db.repositories.core import AsyncCore
 
 

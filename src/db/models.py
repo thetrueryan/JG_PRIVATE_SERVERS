@@ -1,10 +1,19 @@
+from typing import Annotated
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import String, BigInteger, text, DateTime, ForeignKey
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-from src.db.models.data_types import bigint, created_at, intpk, str_256
-from src.db.models.database import Base
+intpk = Annotated[int, mapped_column(primary_key=True)]
+bigint = Annotated[int, mapped_column(BigInteger, nullable=False, unique=True)]
+str_256 = Annotated[str, 256]
+created_at = Annotated[
+    datetime, mapped_column(server_default=text("TIMEZONE ('utc', now())"))
+]
+
+
+class Base(DeclarativeBase):
+    type_annotation_map = {str_256: String(256)}
 
 
 class UsersOrm(Base):

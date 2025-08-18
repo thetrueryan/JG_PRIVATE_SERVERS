@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from contextlib import suppress
 
 from bot.bot import bot
 from bot.dispatcher import dp
@@ -9,10 +10,15 @@ from scripts.order_time_check import check_orders_time_loop
 
 async def main():
     logging.basicConfig(level=logging.INFO)
-    await asyncio.gather(
-        check_orders_time_loop(),
-        dp.start_polling(bot),
-    )
+
+    background_task = asyncio.create_task(check_orders_time_loop())
+
+    try:
+        await dp.start_polling(bot)
+    finally:
+        background_task.cancel()
+        with suppress(asyncio.CancelledError):
+            await background_task
 
 
 if __name__ == "__main__":
