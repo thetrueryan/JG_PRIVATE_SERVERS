@@ -2,7 +2,7 @@ from datetime import datetime
 
 from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
-from aiogram.types import CallbackQuery, FSInputFile, Message
+from aiogram.types import CallbackQuery, Message
 
 from bot.keyboards.user_keyboard.buy_vpn_keyboard import (
     back_menu,
@@ -27,10 +27,9 @@ router = Router()
 
 @router.message(F.text == "🛒 Купить сервер")
 async def cmd_select_vpn_country(message: Message, state: FSMContext):
-    banner = FSInputFile("./bot/images/country_banner.png")
     await state.update_data(prev="main_menu")
-    await message.answer_photo(
-        banner, caption=captions["vpn_country"], reply_markup=select_country_menu()
+    await message.answer(
+        text=captions["vpn_country"], reply_markup=select_country_menu()
     )
     await state.set_state(VPNOrder.country)
 
@@ -38,21 +37,17 @@ async def cmd_select_vpn_country(message: Message, state: FSMContext):
 @router.message(VPNOrder.country, F.text != "↩️ Назад")
 async def cmd_select_vpn_type(message: Message, state: FSMContext):
     await state.update_data(country=message.text)
-    banner = FSInputFile("./bot/images/vpn_type_banner.png")
     await state.update_data(prev=VPNOrder.country)
-    await message.answer_photo(
-        banner, caption=captions["vpn_type"], reply_markup=select_vpn_type_menu()
-    )
+    await message.answer(text=captions["vpn_type"], reply_markup=select_vpn_type_menu())
     await state.set_state(VPNOrder.vpn_type)
 
 
 @router.message(VPNOrder.vpn_type, F.text != "↩️ Назад")
 async def cmd_select_traffic(message: Message, state: FSMContext):
     await state.update_data(vpn_type=message.text)
-    banner = FSInputFile("./bot/images/traffic_banner.png")
     await state.update_data(prev=VPNOrder.vpn_type)
-    await message.answer_photo(
-        banner, caption=captions["vpn_traffic"], reply_markup=select_traffic_menu()
+    await message.answer(
+        text=captions["vpn_traffic"], reply_markup=select_traffic_menu()
     )
     await state.set_state(VPNOrder.traffic)
 
@@ -60,10 +55,9 @@ async def cmd_select_traffic(message: Message, state: FSMContext):
 @router.message(VPNOrder.traffic, F.text != "↩️ Назад")
 async def cmd_select_period(message: Message, state: FSMContext):
     await state.update_data(traffic=message.text)
-    banner = FSInputFile("./bot/images/period_banner.png")
     await state.update_data(prev=VPNOrder.traffic)
-    await message.answer_photo(
-        banner, caption=captions["vpn_select_period"], reply_markup=select_period_menu()
+    await message.answer(
+        text=captions["vpn_select_period"], reply_markup=select_period_menu()
     )
     await state.set_state(VPNOrder.period)
 
@@ -71,11 +65,9 @@ async def cmd_select_period(message: Message, state: FSMContext):
 @router.message(VPNOrder.period, F.text != "↩️ Назад")
 async def cmd_select_payment(message: Message, state: FSMContext):
     await state.update_data(period=message.text)
-    banner = FSInputFile("./bot/images/payment_banner.png")
     await state.update_data(prev=VPNOrder.period)
-    await message.answer_photo(
-        banner,
-        caption=captions["vpn_select_payment"],
+    await message.answer(
+        text=captions["vpn_select_payment"],
         reply_markup=select_payment_menu(),
     )
     await state.set_state(VPNOrder.payment)

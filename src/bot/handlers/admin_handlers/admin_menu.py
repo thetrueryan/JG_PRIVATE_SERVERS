@@ -5,7 +5,7 @@ from aiogram.types import Message
 
 from bot.keyboards.admin_keyboard.admin_menu_keyboard import admin_menu_keyboard
 from bot.states import VPNOrder
-from config.settings import ADMIN_TG_ID
+from core.settings import ADMIN_TG_ID
 
 router = Router()
 

@@ -1,7 +1,7 @@
 from typing import Optional
 
 from bot.bot import bot
-from config.settings import ADMIN_TG_ID
+from core.settings import ADMIN_TG_ID
 from decorators.logging_decorator import log_call
 
 
