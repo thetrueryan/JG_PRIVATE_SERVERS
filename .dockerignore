@@ -19,7 +19,7 @@ venv/
 *.db
 
 # Logs
-/logs
+logs/
 *.log
 
 # macOS / Linux / Windows junk
@@ -50,3 +50,7 @@ htmlcov/
 #env
 .env
 .environment
+.env.example
+
+#git
+.ginignore

@@ -1,6 +1,6 @@
 services:
   tg_bot:
-    image: thetrueryan/jg_servers_bot:prod
+    image: thetrueryan/jg_servers_bot:prod_v2.1
     depends_on: 
       - data_base
     container_name: jg_bot
