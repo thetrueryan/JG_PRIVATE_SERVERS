@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 
 from utils.main_keyboard import main_menu
 from core.logger import logger
-from repositories.core import AsyncCore
+from repositories.bot_repository import BotRepo
 
 router = Router()
 
@@ -20,7 +20,7 @@ async def cmd_start(message: Message, state: FSMContext):
             username = message.from_user.username
             first_name = message.from_user.first_name
             last_name = message.from_user.last_name
-            await AsyncCore.add_user(telegram_id, username, first_name, last_name)
+            await BotRepo.add_user(telegram_id, username, first_name, last_name)
         except IntegrityError as e:
             logger.info(
                 f"IntegrityError: Пользователь с id: {telegram_id} уже есть в базе"

@@ -11,7 +11,7 @@ from core.session import async_engine, async_session_factory
 from core.decorators import log_call
 
 
-class AsyncCore:
+class BotRepo:
     @log_call
     @staticmethod
     async def create_tables():

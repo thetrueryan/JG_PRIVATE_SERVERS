@@ -8,7 +8,7 @@ from utils.admin_menu_keyboard import (
 )
 from utils.main_keyboard import back_button
 from core.states import VPNOrder
-from repositories.core import AsyncCore
+from repositories.bot_repository import BotRepo
 
 router = Router()
 
@@ -67,7 +67,7 @@ async def cmd_check_sended_tg_id(message: Message, state: FSMContext):
             try:
                 tg_id_int = int(tg_id)
                 if tg_id_int:
-                    user = await AsyncCore.get_user_by_tg_id(tg_id_int)
+                    user = await BotRepo.get_user_by_tg_id(tg_id_int)
                     if user:
                         await state.update_data(tg_id_to_send_config=tg_id_int)
                         await state.set_state(VPNOrder.send_conf)

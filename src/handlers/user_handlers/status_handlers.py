@@ -13,7 +13,7 @@ from utils.buy_vpn_keyboard import (
 from core.keyboard_captions import captions
 from utils.status_keyboard import continue_menu, status_menu
 from core.states import VPNOrder
-from repositories.core import AsyncCore
+from repositories.bot_repository import BotRepo
 from utils.calculate import calculate_duration, calculate_extend_order_price
 from services.crypto_service import check_invoice_status_loop, get_crypto_invoice
 from services.admin_service import send_order_info_to_admin
@@ -26,7 +26,7 @@ async def cmd_status_menu(message: Message, state: FSMContext):
     await state.update_data(prev="main_menu")
     if message.from_user:
         tg_id = message.from_user.id
-        result = await AsyncCore.get_orders_by_tg_id(tg_id)
+        result = await BotRepo.get_orders_by_tg_id(tg_id)
         await message.answer("<b>Статус пользователя</b>")
         if result:
             orders_id_list = []
@@ -64,7 +64,7 @@ async def cmd_select_order_to_pay(message: Message, state: FSMContext):
     await state.update_data(prev=VPNOrder.status)
     if message.from_user:
         tg_id = message.from_user.id
-        result = await AsyncCore.get_orders_by_tg_id(tg_id)
+        result = await BotRepo.get_orders_by_tg_id(tg_id)
         if result:
             orders_id_list = []
             for user in result:
@@ -139,7 +139,7 @@ async def cmd_crypto_status_invoice(message: Message, state: FSMContext):
         order_id = data.get("selected_order_id")
         order_number = data.get("order_number")
         if isinstance(order_id, int):
-            order = await AsyncCore.get_order_by_id(order_id)
+            order = await BotRepo.get_order_by_id(order_id)
             if order:
                 old_price = order.price
                 old_months = order.duration_months
@@ -170,7 +170,7 @@ async def cmd_crypto_status_invoice(message: Message, state: FSMContext):
                         )
                         success_status = await check_invoice_status_loop(invoice)
                         if success_status == "paid":
-                            await AsyncCore.updaid_expired_order(
+                            await BotRepo.updaid_expired_order(
                                 order_id,
                                 new_price,
                                 invoice_id,
@@ -186,7 +186,7 @@ async def cmd_crypto_status_invoice(message: Message, state: FSMContext):
                                 f"invoice_id: {invoice_id}\ntelegram_user_id: {telegram_id}\nusername: @{username}",
                             )
                         else:
-                            await AsyncCore.update_paid_status(
+                            await BotRepo.update_paid_status(
                                 invoice_id, status_name="expired"
                             )
                             await message.answer(text="❌ Срок оплаты просрочен!")
@@ -205,7 +205,7 @@ async def cmd_fiat_status_invoice(message: Message, state: FSMContext):
             data = await state.get_data()
             order_id = data.get("selected_order_id")
             if isinstance(order_id, int):
-                order = await AsyncCore.get_order_by_id(order_id)
+                order = await BotRepo.get_order_by_id(order_id)
                 if order:
                     old_price = order.price
                     old_months = order.duration_months

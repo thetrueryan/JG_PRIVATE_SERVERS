@@ -15,7 +15,7 @@ from utils.buy_vpn_keyboard import (
 )
 from core.keyboard_captions import captions
 from core.states import VPNOrder
-from repositories.core import AsyncCore
+from repositories.bot_repository import BotRepo
 from utils.calculate import calculate_duration, calculate_price
 from services.crypto_service import check_invoice_status_loop, get_crypto_invoice
 from core.crypto_init import crypto
@@ -89,9 +89,9 @@ async def cmd_crypto_payment(message: Message, state: FSMContext):
                 telegram_id = message.from_user.id
                 username = message.from_user.username
                 if telegram_id:
-                    user_id = await AsyncCore.get_user_by_tg_id(telegram_id)
+                    user_id = await BotRepo.get_user_by_tg_id(telegram_id)
                     if user_id:
-                        await AsyncCore.add_order(
+                        await BotRepo.add_order(
                             user_id, total_price, duration, invoice_id
                         )
                         payment_url = invoice.bot_invoice_url
@@ -115,7 +115,7 @@ async def cmd_crypto_payment(message: Message, state: FSMContext):
                             )
                             success_status = await check_invoice_status_loop(invoice)
                             if success_status == "paid":
-                                await AsyncCore.update_paid_status(
+                                await BotRepo.update_paid_status(
                                     invoice_id,
                                     status_name="paid",
                                     paid_at=True,
@@ -129,7 +129,7 @@ async def cmd_crypto_payment(message: Message, state: FSMContext):
                                     f"invoice_id: {invoice_id}\ntelegram_user_id: {telegram_id}\nusername: @{username}\npayment_type: {payment_type}\ntotal_price: {total_price:.2f}\n",
                                 )
                             else:
-                                await AsyncCore.update_paid_status(
+                                await BotRepo.update_paid_status(
                                     invoice_id, status_name="expired"
                                 )
                                 await message.answer(text="❌ Срок оплаты просрочен!")

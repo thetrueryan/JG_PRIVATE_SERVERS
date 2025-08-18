@@ -4,7 +4,7 @@ from typing import Optional
 
 from core.settings import ADMIN_TG_ID
 from core.logger import logger
-from repositories.core import AsyncCore
+from repositories.bot_repository import BotRepo
 from core.decorators import log_call
 from core.bot import bot
 from models.models import OrdersOrm
@@ -14,7 +14,7 @@ from models.models import OrdersOrm
 async def check_orders_time_loop():
     try:
         while True:
-            orders = await AsyncCore.get_orders_list()
+            orders = await BotRepo.get_orders_list()
             if orders:
                 now_time = datetime.utcnow()
                 for order in orders:
@@ -52,7 +52,7 @@ async def send_order_info_to_admin(
 
 async def send_order_warning_to_user(order: OrdersOrm, time_left: int):
     user_id = order.user_id
-    user = await AsyncCore.get_user_by_id(user_id)
+    user = await BotRepo.get_user_by_id(user_id)
     if user:
         telegram_id = user.telegram_id
         await bot.send_message(

@@ -5,7 +5,7 @@ from aiogram.types import Message
 from utils.admin_menu_keyboard import admin_add_server_keyboard
 from utils.main_keyboard import back_button
 from core.states import VPNOrder
-from repositories.core import AsyncCore
+from repositories.bot_repository import BotRepo
 
 router = Router()
 
@@ -63,10 +63,8 @@ async def cmd_add_server(message: Message, state: FSMContext):
             user_id = None
             if params["tg_user_id"]:
                 tg_user_id = params["tg_user_id"]
-                user_id = await AsyncCore.get_user_by_tg_id(tg_user_id)
-            await AsyncCore.add_server(
-                country, vpn_type, traffic, price_per_day, user_id
-            )
+                user_id = await BotRepo.get_user_by_tg_id(tg_user_id)
+            await BotRepo.add_server(country, vpn_type, traffic, price_per_day, user_id)
             await message.answer(
                 "Сервер успешно добавлен в таблицу!", reply_markup=back_button()
             )

@@ -6,7 +6,7 @@ from utils.admin_menu_keyboard import admin_order_add_type_keyboard
 from utils.main_keyboard import back_button
 from core.states import VPNOrder
 from core.settings import ADMIN_TG_ID
-from repositories.core import AsyncCore
+from repositories.bot_repository import BotRepo
 
 router = Router()
 
@@ -48,12 +48,12 @@ async def add_new_order(message: Message, state: FSMContext):
                     telegram_id = int(order_params[0])
                     price = float(order_params[1])
                     duration = int(order_params[2])
-                    user_id = await AsyncCore.get_user_by_tg_id(telegram_id)
+                    user_id = await BotRepo.get_user_by_tg_id(telegram_id)
                     if user_id:
-                        order_id = await AsyncCore.add_order(
+                        order_id = await BotRepo.add_order(
                             user_id, price, duration, return_id=True
                         )
-                        await AsyncCore.update_paid_status(
+                        await BotRepo.update_paid_status(
                             order_id=order_id,
                             status_name="paid",
                             paid_at=True,
@@ -75,7 +75,7 @@ async def update_old_order(message: Message, state: FSMContext):
                     new_price = float(order_params[1])
                     status = order_params[2]
                     new_duration = int(order_params[3])
-                    await AsyncCore.updaid_expired_order(
+                    await BotRepo.updaid_expired_order(
                         order_id=order_id,
                         new_price=new_price,
                         status_name=status,
