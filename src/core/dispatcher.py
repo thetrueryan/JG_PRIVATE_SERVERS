@@ -1,8 +1,8 @@
 from aiogram import Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 
-from bot.handlers.admin_handlers import add_order, add_server, admin_menu, send_to_user
-from bot.handlers.user_handlers import (
+from handlers.admin_handlers import add_order, add_server, admin_menu, send_to_user
+from handlers.user_handlers import (
     buy_vpn_handlers,
     go_back,
     main_menu_handlers,

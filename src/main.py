@@ -2,9 +2,9 @@ import asyncio
 import logging
 from contextlib import suppress
 
-from bot.bot import bot
-from bot.dispatcher import dp
-from scripts.order_time_check import check_orders_time_loop
+from core.bot import bot
+from core.dispatcher import dp
+from services.admin_service import check_orders_time_loop
 
 
 async def main():

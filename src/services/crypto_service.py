@@ -2,8 +2,20 @@ import asyncio
 
 from aiocryptopay.models.invoice import Invoice  # type: ignore[import-untyped]
 
-from loggers.logger import logger
-from payment.crypto_init import crypto
+from core.decorators import log_call
+from core.logger import logger
+from core.crypto_init import crypto
+
+
+@log_call
+async def get_crypto_invoice(total_price: float) -> Invoice:
+    invoice = await crypto.create_invoice(
+        currency_type="fiat",
+        fiat="RUB",
+        amount=total_price,
+        expires_in=900,
+    )
+    return invoice
 
 
 async def check_invoice_status_loop(invoice: Invoice) -> str | None:

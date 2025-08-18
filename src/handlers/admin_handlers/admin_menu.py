@@ -3,8 +3,8 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
-from bot.keyboards.admin_keyboard.admin_menu_keyboard import admin_menu_keyboard
-from bot.states import VPNOrder
+from utils.admin_menu_keyboard import admin_menu_keyboard
+from core.states import VPNOrder
 from core.settings import ADMIN_TG_ID
 
 router = Router()

@@ -4,9 +4,9 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 from sqlalchemy.exc import IntegrityError
 
-from bot.keyboards.user_keyboard.main_menu_keyboard import main_menu
-from loggers.logger import logger
-from db.repositories.core import AsyncCore
+from utils.main_keyboard import main_menu
+from core.logger import logger
+from repositories.core import AsyncCore
 
 router = Router()
 

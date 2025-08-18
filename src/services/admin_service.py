@@ -1,11 +1,13 @@
 import asyncio
 from datetime import datetime, timedelta
+from typing import Optional
 
-from loggers.logger import logger
-from db.repositories.core import AsyncCore
-from decorators.logging_decorator import log_call
-from scripts.admin import send_order_info_to_admin
-from scripts.send_orders_warning import send_order_warning_to_user
+from core.settings import ADMIN_TG_ID
+from core.logger import logger
+from repositories.core import AsyncCore
+from core.decorators import log_call
+from core.bot import bot
+from models.models import OrdersOrm
 
 
 @log_call
@@ -35,3 +37,25 @@ async def check_orders_time_loop():
     except asyncio.CancelledError as e:
         logger.warning(f"Фоновая проверка ордеров остановлена {e}")
         raise
+
+
+@log_call
+async def send_order_info_to_admin(
+    order_info: Optional[str] = None, user_info: Optional[str] = None
+):
+    if order_info:
+        if user_info:
+            await bot.send_message(chat_id=ADMIN_TG_ID, text=order_info + user_info)
+        else:
+            await bot.send_message(chat_id=ADMIN_TG_ID, text=order_info)
+
+
+async def send_order_warning_to_user(order: OrdersOrm, time_left: int):
+    user_id = order.user_id
+    user = await AsyncCore.get_user_by_id(user_id)
+    if user:
+        telegram_id = user.telegram_id
+        await bot.send_message(
+            chat_id=telegram_id,
+            text=f"<u>❗️Уважаемый пользователь!</u>\n\n⌛️ Аренда одного из ваших серверов истекает через <b>{time_left} дней!</b>\n\n💰 Оплатите его во вкладке <u>status</u>, если хотите продолжать им пользоваться по истечении срока.",
+        )

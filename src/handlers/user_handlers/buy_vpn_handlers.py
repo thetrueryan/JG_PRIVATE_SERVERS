@@ -4,7 +4,7 @@ from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
-from bot.keyboards.user_keyboard.buy_vpn_keyboard import (
+from utils.buy_vpn_keyboard import (
     back_menu,
     inline_payment_menu,
     select_country_menu,
@@ -13,14 +13,13 @@ from bot.keyboards.user_keyboard.buy_vpn_keyboard import (
     select_traffic_menu,
     select_vpn_type_menu,
 )
-from bot.keyboards.user_keyboard.keyboard_captions import captions
-from bot.states import VPNOrder
-from db.repositories.core import AsyncCore
-from payment.calculate import calculate_duration, calculate_price
-from payment.check_invoice_status import check_invoice_status_loop
-from payment.crypto_init import crypto
-from payment.crypto_invoice import get_crypto_invoice
-from scripts.admin import send_order_info_to_admin
+from core.keyboard_captions import captions
+from core.states import VPNOrder
+from repositories.core import AsyncCore
+from utils.calculate import calculate_duration, calculate_price
+from services.crypto_service import check_invoice_status_loop, get_crypto_invoice
+from core.crypto_init import crypto
+from services.admin_service import send_order_info_to_admin
 
 router = Router()
 

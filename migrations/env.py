@@ -4,8 +4,8 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
-from src.config.settings import DB_URL_asyncpg
-from src.db.models import Base, UsersOrm, OrdersOrm, ServersOrm  # noqa
+from src.core.settings import DB_URL_asyncpg
+from models.models import Base, UsersOrm, OrdersOrm, ServersOrm  # noqa
 
 
 config = context.config

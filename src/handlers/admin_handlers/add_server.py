@@ -2,10 +2,10 @@ from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
-from bot.keyboards.admin_keyboard.admin_menu_keyboard import admin_add_server_keyboard
-from bot.keyboards.user_keyboard.back_keyboard import back_button
-from bot.states import VPNOrder
-from db.repositories.core import AsyncCore
+from utils.admin_menu_keyboard import admin_add_server_keyboard
+from utils.main_keyboard import back_button
+from core.states import VPNOrder
+from repositories.core import AsyncCore
 
 router = Router()
 
