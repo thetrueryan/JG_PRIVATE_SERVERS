@@ -8,6 +8,7 @@ CORE_DIR_PATH = Path(__file__).resolve().parents
 
 class Settings(BaseSettings):
     ADMIN_TG_ID: str
+    ADMIN_TG_USERNAME: str
     BOT_TOKEN: str
     CRYPTOBOT_API_TOKEN: str
 
@@ -28,5 +29,6 @@ settings = Settings()  # type: ignore
 
 DB_URL_asyncpg = settings.DATABASE_URL_asyncpg
 ADMIN_TG_ID = settings.ADMIN_TG_ID
+ADMIN_TG_USERNAME = settings.ADMIN_TG_USERNAME
 BOT_TOKEN = settings.BOT_TOKEN
 CRYPTOBOT_API_TOKEN = settings.CRYPTOBOT_API_TOKEN
