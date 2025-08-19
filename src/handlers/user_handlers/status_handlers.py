@@ -10,6 +10,7 @@ from utils.buy_vpn_keyboard import (
     select_payment_menu,
     select_period_menu,
 )
+from core.settings import ADMIN_TG_USERNAME
 from core.keyboard_captions import captions
 from utils.status_keyboard import continue_menu, status_menu
 from core.states import VPNOrder
@@ -179,7 +180,7 @@ async def cmd_crypto_status_invoice(message: Message, state: FSMContext):
                                 new_months,
                             )
                             await message.answer(
-                                text=f"✅ Оплата прошла успешно!\nАренда сервера продлена на {new_months} месяца!\nДля связи: @ttryan"
+                                text=f"✅ Оплата прошла успешно!\nАренда сервера продлена на {new_months} месяца!\nДля связи: {ADMIN_TG_USERNAME}"
                             )
                             await send_order_info_to_admin(
                                 f"<u>Заказ # {order_id} Продлен</u>: Сумма оплаты: {new_price}, срок: {new_months}\n",
@@ -216,7 +217,7 @@ async def cmd_fiat_status_invoice(message: Message, state: FSMContext):
                     if new_price:
                         await message.answer(text=f"Всего к оплате: {new_price:.2f}")
                         await message.answer(
-                            text="Внимание, оплата в фиате сейчас в разработке\nДля оплаты фиатом просьба связяться со мной: @ttryan\n",
+                            text=f"Внимание, оплата в фиате сейчас в разработке\nДля оплаты фиатом просьба связяться со мной: {ADMIN_TG_USERNAME}\n",
                             reply_markup=back_button(),
                         )
                         await send_order_info_to_admin(

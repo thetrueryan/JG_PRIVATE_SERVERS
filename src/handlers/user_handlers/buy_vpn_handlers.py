@@ -13,6 +13,7 @@ from utils.buy_vpn_keyboard import (
     select_traffic_menu,
     select_vpn_type_menu,
 )
+from core.settings import ADMIN_TG_USERNAME
 from core.keyboard_captions import captions
 from core.states import VPNOrder
 from repositories.bot_repository import BotRepo
@@ -122,7 +123,7 @@ async def cmd_crypto_payment(message: Message, state: FSMContext):
                                     expired_at=True,
                                 )
                                 await message.answer(
-                                    text="✅ Оплата прошла успешно!\nФайл подключения будет присалан сразу как мы настроим сервер\nДля связи: @ttryan"
+                                    text=f"✅ Оплата прошла успешно!\nФайл подключения будет присалан сразу как мы настроим сервер\nДля связи: {ADMIN_TG_USERNAME}"
                                 )
                                 await send_order_info_to_admin(
                                     f"<u>Заказ</u>:\nСтрана: {data["country"]}\nТип VPN: {data["vpn_type"]}\nТрафик: {data["traffic"]}\nСрок аренды: {data["period"]}\n",
@@ -181,7 +182,7 @@ async def cmd_fiat_payment(message: Message, state: FSMContext):
             if payment_type == "💵 Fiat":
                 await message.answer(text=f"Всего к оплате: {total_price:.2f}")
                 await message.answer(
-                    text="Внимание, оплата в фиате сейчас в разработке\nДля оплаты фиатом просьба связяться со мной: @ttryan\n",
+                    text=f"Внимание, оплата в фиате сейчас в разработке\nДля оплаты фиатом просьба связяться со мной: {ADMIN_TG_USERNAME}\n",
                     reply_markup=back_menu(),
                 )
                 await send_order_info_to_admin(
